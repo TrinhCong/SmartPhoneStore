@@ -5,17 +5,28 @@
  */
 package smartphonestore;
 
-/**
- *
- * @author tvcpr
- */
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class SmartPhoneStore {
 
-    /**
-     * @param args the command line arguments
-     */
+    
+      static  DBConnection connection=new DBConnection();
     public static void main(String[] args) {
-        // TODO code application logic here
+        Connection connect=connection.open();
+        try {
+            Statement stm=connect.createStatement();
+            ResultSet rs=stm.executeQuery("Select * from Users");
+            while(rs.next())
+                System.out.println("Name: "+rs.getString(2));
+        } catch (SQLException ex) {
+            System.out.println("has error");
+        }
     }
     
 }
