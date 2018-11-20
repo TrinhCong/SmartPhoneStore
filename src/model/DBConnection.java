@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package smartphonestore;
+package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,12 +16,11 @@ import java.util.logging.Logger;
  * @author tvcpr
  */
 public class DBConnection {
-
-    Connection connection;
-    String driver;
-    String connectionString;
-    String dbUserName;
-    String dbPassWord;
+    private Connection connection;
+    private String driver;
+    private String connectionString;
+    private String dbUserName;
+    private String dbPassWord;
     public DBConnection(){
         driver="com.microsoft.sqlserver.jdbc.SQLServerDriver";
         connectionString="jdbc:sqlserver://127.0.0.1:1433;databaseName=SmartPhoneStore";
@@ -32,9 +31,8 @@ public class DBConnection {
         try {
             Class.forName(driver);
             connection=DriverManager.getConnection(connectionString,dbUserName,dbPassWord);
-            System.out.println("Connection success");
         } catch (Exception ex) {
-            System.out.println("Connection failed!");
+            System.out.println("Ket noi that bai!");
         }
         return connection;
     }
