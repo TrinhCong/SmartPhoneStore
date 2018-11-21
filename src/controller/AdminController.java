@@ -5,11 +5,19 @@
  */
 package controller;
 
+import java.sql.Connection;
+
 /**
  *
  * @author tvcpr
  */
 public class AdminController {
+    
+    private Connection connection;
+
+    public AdminController(Connection connect) {
+        connection = connect;
+    }
     public void login(){
         System.out.println("Cửa sổ đăng nhập!");
     }

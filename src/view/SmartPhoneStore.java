@@ -6,6 +6,7 @@ import controller.ProductController;
 import controller.QuickSearchController;
 import controller.UtilityController;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -14,57 +15,56 @@ import model.DBConnection;
 public class SmartPhoneStore {
 
     static DBConnection connection = new DBConnection();
-    static UtilityController util = new UtilityController();
-    static AdminController auth = new AdminController();
-    static HomeController home = new HomeController();
-    static ProductController productControl = new ProductController();
-    static QuickSearchController quickSearch = new QuickSearchController();
 
     public static void main(String[] args) throws Exception {
         Connection connect = connection.open();
+        UtilityController util = new UtilityController(connect);
+        AdminController auth = new AdminController(connect);
+        HomeController home = new HomeController(connect);
+        ProductController productControl = new ProductController(connect);
+        QuickSearchController quickSearch = new QuickSearchController(connect);
         Scanner sc = new Scanner(System.in);
-        try {
-            Statement stm = connect.createStatement();
-            String choiceStr = "";
+        //            Statement stm = connect.createStatement();
+//            ResultSet rs= stm.executeQuery("select * from Admins");
+//            while(rs.next()){
+//                System.out.println("Name: "+rs.getString(2));
+//            }
+        String choiceStr = "";
+        int choice;
+        do {
             util.showMainMenu();
-            int choice = 0;
             do {
-                do {
-                    System.out.print("Nhập vào 1 lựa chọn:");
-                    choiceStr = sc.nextLine();
-                    if (util.isNumeric(choiceStr)) {
-                        break;
-                    } else {
-                        System.out.println("Vui lòng nhập lựa chọn là 1 số!");
-                    }
-                } while (true);
-                choice = (int) Double.parseDouble(choiceStr);
-                switch (choice) {
-                    case 1:
-                        auth.login();
-                        break;
-                    case 2:
-                        home.ShowMenu();
-                        break;
-                    case 3:
-                        quickSearch.ShowMenu();
-                        break;
-                    case 4:
-                        productControl.showFilterMenu();
-                        break;
-                    case 5:
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println("Lựa chọn không đúng!");
-                        break;
+                System.out.print("Nhập vào 1 lựa chọn:");
+                choiceStr = sc.nextLine();
+                if (util.isNumeric(choiceStr)) {
+                    break;
+                } else {
+                    System.out.println("Vui lòng nhập lựa chọn là 1 số!");
                 }
-            } while (choice != 5);
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-
+            } while (true);
+            choice = (int) Double.parseDouble(choiceStr);
+            switch (choice) {
+                case 1:
+                    auth.login();
+                    break;
+                case 2:
+                    home.ShowMenu();
+                    break;
+                case 3:
+                    quickSearch.showMenu();
+                    break;
+                case 4:
+                    productControl.showFilterMenu();
+                    break;
+                case 5:
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Lựa chọn không đúng!");
+                    break;
+            }
+        } while (choice != 5);
+        connection.close();
     }
 
 }
