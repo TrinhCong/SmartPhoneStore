@@ -10,20 +10,20 @@ package model;
  * @author tvcpr
  */
 public class StatusCategory {
-    private int ID;
+    private int Id;
     private String Description;
     /**
-     * @return the ID
+     * @return the Id
      */
-    public int getID() {
-        return ID;
+    public int getId() {
+        return Id;
     }
 
     /**
-     * @param ID the ID to set
+     * @param Id the Id to set
      */
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     /**

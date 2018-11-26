@@ -11,51 +11,51 @@ package model;
  */
 public class BillDetail {
 
-    private int ID;
-    private int BillID;
-    private int ProductID;
+    private int Id;
+    private int BillId;
+    private int ProductId;
     private int Quantity;
     private double Price;
     /**
-     * @return the ID
+     * @return the Id
      */
-    public int getID() {
-        return ID;
+    public int getId() {
+        return Id;
     }
 
     /**
-     * @param ID the ID to set
+     * @param Id the Id to set
      */
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     /**
-     * @return the BillID
+     * @return the BillId
      */
-    public int getBillID() {
-        return BillID;
+    public int getBillId() {
+        return BillId;
     }
 
     /**
-     * @param BillID the BillID to set
+     * @param BillId the BillId to set
      */
-    public void setBillID(int BillID) {
-        this.BillID = BillID;
+    public void setBillId(int BillId) {
+        this.BillId = BillId;
     }
 
     /**
-     * @return the ProductID
+     * @return the ProductId
      */
-    public int getProductID() {
-        return ProductID;
+    public int getProductId() {
+        return ProductId;
     }
 
     /**
-     * @param ProductID the ProductID to set
+     * @param ProductId the ProductId to set
      */
-    public void setProductID(int ProductID) {
-        this.ProductID = ProductID;
+    public void setProductId(int ProductId) {
+        this.ProductId = ProductId;
     }
 
     /**

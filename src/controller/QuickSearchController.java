@@ -37,7 +37,7 @@ public class QuickSearchController {
     public void quickSearch(String keyword){
 //        try {
 //            Statement stm = connection.createStatement();
-//            ResultSet rs= stm.executeQuery("select * from Admins");
+//            ResultSet rs= stm.executeQuery("select * from Products where Name like '%"+keyword+"%' or ImagePath like '%Samsung%' or OS like '%Samsung%'");
 //            while(rs.next()){
 //                System.out.println("Name: "+rs.getString(2));
 //            }

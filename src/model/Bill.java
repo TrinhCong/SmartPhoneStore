@@ -12,68 +12,68 @@ import java.sql.Date;
  * @author tvcpr
  */
 public class Bill {
-private int ID;
-    private int CustomerID;
-    private int StatusID;
-    private int ShipperID;
+private int Id;
+    private int CustomerId;
+    private int StatusId;
+    private int ShipperId;
     private Date CreatedDate;
     private double Total;
     private String ReceivedAddress;
     private String Note;
     /**
-     * @return the ID
+     * @return the Id
      */
-    public int getID() {
-        return ID;
+    public int getId() {
+        return Id;
     }
 
     /**
-     * @param ID the ID to set
+     * @param Id the Id to set
      */
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     /**
-     * @return the CustomerID
+     * @return the CustomerId
      */
-    public int getCustomerID() {
-        return CustomerID;
+    public int getCustomerId() {
+        return CustomerId;
     }
 
     /**
-     * @param CustomerID the CustomerID to set
+     * @param CustomerId the CustomerId to set
      */
-    public void setCustomerID(int CustomerID) {
-        this.CustomerID = CustomerID;
+    public void setCustomerId(int CustomerId) {
+        this.CustomerId = CustomerId;
     }
 
     /**
-     * @return the StatusID
+     * @return the StatusId
      */
-    public int getStatusID() {
-        return StatusID;
+    public int getStatusId() {
+        return StatusId;
     }
 
     /**
-     * @param StatusID the StatusID to set
+     * @param StatusId the StatusId to set
      */
-    public void setStatusID(int StatusID) {
-        this.StatusID = StatusID;
+    public void setStatusId(int StatusId) {
+        this.StatusId = StatusId;
     }
 
     /**
-     * @return the ShipperID
+     * @return the ShipperId
      */
-    public int getShipperID() {
-        return ShipperID;
+    public int getShipperId() {
+        return ShipperId;
     }
 
     /**
-     * @param ShipperID the ShipperID to set
+     * @param ShipperId the ShipperId to set
      */
-    public void setShipperID(int ShipperID) {
-        this.ShipperID = ShipperID;
+    public void setShipperId(int ShipperId) {
+        this.ShipperId = ShipperId;
     }
 
     /**

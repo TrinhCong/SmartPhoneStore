@@ -14,7 +14,7 @@ import java.sql.Date;
 
 public class Product {
 
-    private int ID;
+    private int Id;
     private String Name;
     private double Price;
     private String ImagePath;
@@ -33,19 +33,19 @@ public class Product {
     private double OS;
     private double SDCard;
     private double Camera;
-    private double CategoryID;
+    private double CategoryId;
     /**
-     * @return the ID
+     * @return the Id
      */
-    public int getID() {
-        return ID;
+    public int getId() {
+        return Id;
     }
 
     /**
-     * @param ID the ID to set
+     * @param Id the Id to set
      */
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int Id) {
+        this.Id = Id;
     }
 
     /**
@@ -301,17 +301,17 @@ public class Product {
     }
 
     /**
-     * @return the CategoryID
+     * @return the CategoryId
      */
-    public double getCategoryID() {
-        return CategoryID;
+    public double getCategoryId() {
+        return CategoryId;
     }
 
     /**
-     * @param CategoryID the CategoryID to set
+     * @param CategoryId the CategoryId to set
      */
-    public void setCategoryID(double CategoryID) {
-        this.CategoryID = CategoryID;
+    public void setCategoryId(double CategoryId) {
+        this.CategoryId = CategoryId;
     }
     
 }
