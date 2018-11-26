@@ -78,12 +78,12 @@ public class HomeController {
         String idStr = "";
         double id;
         do {
-            System.out.println("please enter Price of product you want to see details: ");
+            System.out.println("please enter ID of product you want to see details: ");
             idStr = sc.nextLine();
             if (isNumeric(idStr)){
                 break;
             }else{
-                System.out.println("price must be number!");
+                System.out.println("ID must be number!");
             }
         } while (true); 
         id=Double.parseDouble(idStr);
