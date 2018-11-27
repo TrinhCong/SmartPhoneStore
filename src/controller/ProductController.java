@@ -11,12 +11,11 @@ import java.sql.Connection;
  *
  * @author tvcpr
  */
-public class ProductController {
+public class ProductController extends BaseController{
     
-    private Connection connection;
 
     public ProductController(Connection connect) {
-        connection = connect;
+        super(connect);
     }
     public void showFilterMenu(){
         System.out.println("4.Lọc sản phẩm");

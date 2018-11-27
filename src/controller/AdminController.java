@@ -5,25 +5,21 @@
  */
 package controller;
 
-
+import enums.EnumPosition;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
 
 /**
  *
  * @author tvcpr
  */
-public class AdminController {
+public class AdminController extends BaseController {
 
-    private Connection connection;
-    private Scanner scanner;
 
     public AdminController(Connection connect) {
-        connection = connect;
-        scanner = new Scanner(System.in);
+        super(connect);
     }
 
     public void login() {
@@ -36,9 +32,10 @@ public class AdminController {
             String pass = scanner.nextLine();
             try {
                 Statement stm = connection.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT * FROM Admins WHERE UserName='" + name + "' and PasWord='" + pass + "' ");
-                if (rs.getRow() > 0) {
-                    System.out.println("Login succesfully!");
+                ResultSet rs = stm.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
+                if (rs.isBeforeFirst()) {
+                    System.out.println("Welcome Admin: " + name.trim());
+                    interact();
                     isValid = true;
                 } else {
                     System.out.println("Wrong user name or password!");
@@ -51,8 +48,47 @@ public class AdminController {
 
             } catch (SQLException ex) {
                 System.out.println("Connection fail!");
+                System.exit(0);
             }
         } while (!isValid);
 
+    }
+    
+    public void showMenu() {
+        System.out.println("----- System management -----");
+        System.out.println("1.Product Information Editor");
+        System.out.println("2.Manage Product Bills");
+        System.out.println("3.Back to previous menu\n");
+    }
+    public void interact(){
+    int choice;
+        do {
+            showMenu();
+            System.out.print("==> Enter an option:");
+            choice=enterChoice();
+            switch (choice) {
+                case 1:
+                    showEditorMenu();
+                    break;
+                case 2:
+                    showBillMenu();
+                    break;
+                case 3:
+                    break;
+                default:
+                    System.out.println("Option is invalid!");
+                    break;
+            }
+        } while (choice != 3);
+    }
+    public void showEditorMenu(){
+        makeSpace(EnumPosition.DASH_TOP);
+        System.out.println("Editor menu is completing!");
+        makeSpace(EnumPosition.DASH_BOTTOM);
+    }
+    public void showBillMenu(){
+        makeSpace(EnumPosition.DASH_TOP);
+        System.out.println("Bills management menu is completing!");
+        makeSpace(EnumPosition.DASH_BOTTOM);
     }
 }

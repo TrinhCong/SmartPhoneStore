@@ -4,7 +4,6 @@ import controller.AdminController;
 import controller.HomeController;
 import controller.ProductController;
 import controller.QuickSearchController;
-import controller.UtilityController;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +17,6 @@ public class SmartPhoneStore {
 
     public static void main(String[] args) throws Exception {
         Connection connect = connection.open();
-        UtilityController util = new UtilityController(connect);
         AdminController auth = new AdminController(connect);
         HomeController home = new HomeController(connect);
         ProductController productControl = new ProductController(connect);
@@ -29,20 +27,10 @@ public class SmartPhoneStore {
 //            while(rs.next()){
 //                System.out.println("Name: "+rs.getString(2));
 //            }
-        String choiceStr = "";
         int choice;
         do {
-            util.showMainMenu();
-            do {
-                System.out.print("Nhập vào 1 lựa chọn:");
-                choiceStr = sc.nextLine();
-                if (util.isNumeric(choiceStr)) {
-                    break;
-                } else {
-                    System.out.println("Vui lòng nhập lựa chọn là 1 số!");
-                }
-            } while (true);
-            choice = (int) Double.parseDouble(choiceStr);
+            auth.showMainMenu();
+            choice=auth.enterChoice();
             switch (choice) {
                 case 1:
                     auth.login();
@@ -60,7 +48,7 @@ public class SmartPhoneStore {
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Lựa chọn không đúng!");
+                    System.out.println("Option is invalid!");
                     break;
             }
         } while (choice != 5);

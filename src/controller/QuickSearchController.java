@@ -18,12 +18,11 @@ import model.DBConnection;
  *
  * @author tvcpr
  */
-public class QuickSearchController {
+public class QuickSearchController extends BaseController {
     
-    private Connection connection;
 
     public QuickSearchController(Connection connect) {
-        connection = connect;
+        super(connect);
     }
     public void showMenu(){
         System.out.println("Option 3: QUICK SEARCH");

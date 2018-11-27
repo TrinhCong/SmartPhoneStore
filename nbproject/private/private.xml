@@ -11,13 +11,13 @@
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/StatusCategory.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/controller/ProductController.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/Admin.java</file>
+            <file>file:/D:/Study/Eproject/SmartPhoneStore/src/enums/EnumPosition.java</file>
+            <file>file:/D:/Study/Eproject/SmartPhoneStore/src/controller/BaseController.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/Product.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/controller/QuickSearchController.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/DBConnection.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/Bill.java</file>
-            <file>file:/D:/Study/Eproject/SmartPhoneStore/src/controller/UtilityController.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/BillDetail.java</file>
-            <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/ProductQuantity.java</file>
             <file>file:/D:/Study/Eproject/SmartPhoneStore/src/model/Customer.java</file>
         </group>
     </open-files>

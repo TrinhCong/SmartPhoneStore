@@ -12,26 +12,24 @@ import java.sql.Statement;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.DBConnection;
 
 /**
  *
  * @author tvcpr
  */
-public class HomeController {
+public class HomeController extends BaseController {
     
-    private Connection connection;
     
     public HomeController(Connection connect) {
-        connection = connect;
+        super(connect);
     }
     
     Scanner sc = new Scanner(System.in);
     public void ShowMenu(){
-        System.out.println("-------------Cửa sổ trang chủ--------------");
+        System.out.println("-------------DashBoard--------------");
         int choice;
-        Statement stm = null;
-        ResultSet rs = null;
+        Statement stm ;
+        ResultSet rs;
         try {
             stm = connection.createStatement();
             rs = stm.executeQuery("select * from Products");
