@@ -1,14 +1,11 @@
 package view;
 
 import controller.AdminController;
+import controller.BaseController;
 import controller.HomeController;
 import controller.ProductController;
 import controller.QuickSearchController;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Scanner;
 import model.DBConnection;
 
 public class SmartPhoneStore {
@@ -21,12 +18,6 @@ public class SmartPhoneStore {
         HomeController home = new HomeController(connect);
         ProductController productControl = new ProductController(connect);
         QuickSearchController quickSearch = new QuickSearchController(connect);
-        Scanner sc = new Scanner(System.in);
-        //            Statement stm = connect.createStatement();
-//            ResultSet rs= stm.executeQuery("select * from Admins");
-//            while(rs.next()){
-//                System.out.println("Name: "+rs.getString(2));
-//            }
         int choice;
         do {
             auth.showMainMenu();
