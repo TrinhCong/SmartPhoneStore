@@ -109,7 +109,7 @@ public class ProductController {
         } catch (SQLException e) {
             System.out.println("\nError unknown!!!\n"+e);
         }    
-        
+        //xem chi tiet san pham
         int choice;
     	do {
     		System.out.println("\n---You want continue???---");
@@ -138,7 +138,8 @@ public class ProductController {
     	Scanner sc=new Scanner(System.in);
         Statement stm = null;
         ResultSet rs= null;
-        int choice2;
+        int ID;
+        String str1;
         do {
         	System.out.println("\n---Please choose category you want to see---\n");
         	System.out.println("1.Apple");
@@ -146,45 +147,32 @@ public class ProductController {
         	System.out.println("3.MobiiStar");
         	System.out.println("4.Nokia");
         	System.out.println("-------------------------");
-        	System.out.print("Please input a number: ");        	
-        	choice2 = sc.nextInt();
+        	System.out.print("Please input a number: ");                		
+        	str1=sc.nextLine();    
         	System.out.print("\n");
-        	switch (choice2) {
-        	case 1:
-        		filterApple();
-        		break;
-        	case 2:
-        		filterSamSung();
-        		break;
-        	case 3:
-        		filterMobiiStar();
-        		break;
-        	case 4:
-        		filterNoKia();
-        		break;
-        	case 5:
-        		showFilterMenu();
-        		break;
-        	default:
-        		System.out.println("\nYou type the wrong command! Please retype\n");
-        		break;
-        	}
-    	} while (true);
-    }
-    
-    //loc theo Apple
-    public void filterApple() {
-    	Scanner sc=new Scanner(System.in);
-    	try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("Select Products.Id,Products.Name,Products.Price,Products.BrandId,BrandCategory.Name from Products, BrandCategory where BrandCategory.Id =12 and Products.BrandId=12");
-            while(rs.next()){
-                System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
+    		if (str1.trim().equals("")) {
+                System.out.println("\nPlease input something!!!\n");
+                continue;
             }
-        } catch (SQLException e) {
-            System.out.println("\nError unknown!!!\n"+e);
-        }
-    	int choice;
+    		try {
+                ID = Integer.parseInt(str1);
+            } catch (NumberFormatException ex) {
+                System.out.println("\nYou must input number. Please retype!!!\n");
+                continue;
+            }
+        	try {
+                stm = connection.createStatement();
+                rs = stm.executeQuery("Select Products.Id,Products.Name,Products.Price,Products.BrandId,BrandCategory.Name from Products,BrandCateGory where BrandCategory.Id ="+ID+" and Products.BrandId="+ID);
+                while(rs.next()){
+                    System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
+                }
+             } catch (SQLException e) {
+                 System.out.println("\nError unknown!!!\n"+e);
+             } 
+        } while(true);
+        
+        // loi chua biet,chay tren filterbyprice thi chay dc
+        /*int choice;
     	do {
     		System.out.println("\n---You want continue???---");
     		System.out.println("1.See product's details");
@@ -203,124 +191,22 @@ public class ProductController {
             		System.out.println("\nYou type the wrong command! Please retype\n");
             		break;
         	}
-    	} while(true); 
-    	
-    }   	
-    	
-    //loc theo SamSung
-    public void filterSamSung() {
-    	Scanner sc= new Scanner (System.in);
-    	try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("Select Products.Id,Products.Name,Products.Price,Products.BrandId,BrandCategory.Name from Products, BrandCategory where BrandCategory.Id =13 and Products.BrandId=13");
-            while(rs.next()){
-                System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
-            }
-        } catch (SQLException e) {
-            System.out.println("\nError unknown!!!\n"+e);
-        }
-    	int choice;
-    	do {
-    		System.out.println("\n---You want continue???---");
-    		System.out.println("1.See product's details");
-    		System.out.println("2.Back to menu FilterByCategory");
-    		System.out.println("----------------------------");
-    		System.out.print("Enter command you want: ");
-    		choice = sc.nextInt();
-        	switch (choice) {
-            	case 1:
-            		productDetails();
-            		break;
-            	case 2:
-            		filterByCategory();
-            		break;
-            	default:
-            		System.out.println("\nYou type the wrong command! Please retype\n");
-            		break;
-        	}
-    	} while(true);
+    	} while(true);*/
+        
+          	
     }
     
-    //loc theo MobiiStar
-    public void filterMobiiStar() {
-    	Scanner sc= new Scanner (System.in);
-    	try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("Select Products.Id,Products.Name,Products.Price,Products.BrandId,BrandCategory.Name from Products, BrandCategory where BrandCategory.Id =14 and Products.BrandId=14");
-            while(rs.next()){
-                System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
-            }
-        } catch (SQLException e) {
-            System.out.println("\nError unknown!!!\n"+e);
-        }
-    	int choice;
-    	do {
-    		System.out.println("\n---You want continue???---");
-    		System.out.println("1.See product's details");
-    		System.out.println("2.Back to menu FilterByCategory");
-    		System.out.println("----------------------------");
-    		System.out.print("Enter command you want: ");
-    		choice = sc.nextInt();
-        	switch (choice) {
-            	case 1:
-            		productDetails();
-            		break;
-            	case 2:
-            		filterByCategory();
-            		break;
-            	default:
-            		System.out.println("\nYou type the wrong command! Please retype\n");
-            		break;
-        	}
-    	} while(true);
-    }
-    
-    // loc theo Nokia
-    public void filterNoKia() {
-    	Scanner sc= new Scanner (System.in);
-    	try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("Select Products.Id,Products.Name,Products.Price,Products.BrandId,BrandCategory.Name from Products, BrandCategory where BrandCategory.Id =15 and Products.BrandId=15");
-            while(rs.next()){
-                System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
-            }
-        } catch (SQLException e) {
-            System.out.println("\nError unknown!!!\n"+e);
-        }
-    	int choice;
-    	do {
-    		System.out.println("\n---You want continue???---");
-    		System.out.println("1.See product's details");
-    		System.out.println("2.Back to menu FilterByCategory");
-    		System.out.println("----------------------------");
-    		System.out.print("Enter command you want: ");
-    		choice = sc.nextInt();
-        	switch (choice) {
-            	case 1:
-            		productDetails();
-            		break;
-            	case 2:
-            		filterByCategory();
-            		break;
-            	default:
-            		System.out.println("\nYou type the wrong command! Please retype\n");
-            		break;
-        	}
-    	} while(true);
-    	
-    }
-    
-    // xem chi tiet san pham
+    // method xem chi tiet san pham
     public void productDetails() {
     	Scanner sc=new Scanner(System.in);
     	int ID;
-    	String str;    	
+    	String str;
+    	
     	do {
     		System.out.print("\n");
         	System.out.print("Enter Product's ID you want to see details: ");
         	System.out.print("\n");
-        	str=sc.nextLine();
-        	
+        	str=sc.nextLine();       	
         	if (str.trim().equals("")) {
                 System.out.println("\nPlease input something!!!\n");
                 continue;
@@ -347,7 +233,7 @@ public class ProductController {
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery("Select * from Products where ID="+ID);
             while(rs.next()){
-                System.out.println("id: "+rs.getString(1)+"\tName: " + rs.getString(2) + "\tPrice: "+rs.getString(3) + "\tBrandId: "+rs.getString(4) + "\tBrandName: "+rs.getString(5));
+                System.out.println("id: "+rs.getString(1)+"\nName: " + rs.getString(2) + "\nPrice: "+rs.getString(3) + "\nBrandId: "+rs.getString(4) + "\nBrandName: "+rs.getString(5)+"\n");
             }
         } catch (SQLException e) {
             System.out.println("\nError unknown!!!\n"+e);
