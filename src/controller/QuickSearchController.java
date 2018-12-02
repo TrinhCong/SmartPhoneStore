@@ -9,9 +9,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,7 +26,6 @@ public class QuickSearchController extends BaseController {
     public void showMenu() {
         boolean isContinue;
         do {
-            isContinue = true;
             System.out.println("Option 3: QUICK SEARCH");
             System.out.print("   Enter a keyword: ");
             String keyword;
@@ -80,8 +76,8 @@ public class QuickSearchController extends BaseController {
             return false;
         } catch (SQLException ex) {
             exitByError();
+            return true;
         }
-        return false;
     }
 
 }
