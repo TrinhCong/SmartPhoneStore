@@ -42,14 +42,15 @@ public class BaseController {
         return true;
     }
 
-    public int enterChoice() {
+    public int enterNumber(String option) {
+        System.out.print("==> Enter " + option + ":");
         String choiceStr = "";
         do {
             choiceStr = scanner.nextLine();
             if (isNumeric(choiceStr)) {
                 break;
             } else {
-                System.out.println("Option must be a number!");
+                System.out.println(option + " must be a number!");
             }
         } while (true);
         return (int) Double.parseDouble(choiceStr);
@@ -57,12 +58,17 @@ public class BaseController {
 
     public void makeSpace(String position) {
         if (position.equals(EnumPosition.DASH_TOP)) {
-            System.out.println("\n\n");
+            System.out.println("\n");
             System.out.println("------------------------------------");
-        } else if(position.equals(EnumPosition.DASH_BOTTOM)) {
+        } else if (position.equals(EnumPosition.DASH_BOTTOM)) {
             System.out.println("------------------------------------");
-            System.out.println("\n\n");
+            System.out.println("\n");
         }
+    }
+
+    public void exitByError() {
+        System.out.println("Connection Fail! Program is exited!");
+        System.exit(0);
     }
 
 }

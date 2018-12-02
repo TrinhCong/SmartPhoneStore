@@ -14,26 +14,27 @@ public class SmartPhoneStore {
 
     public static void main(String[] args) throws Exception {
         Connection connect = connection.open();
-        AdminController auth = new AdminController(connect);
-        HomeController home = new HomeController(connect);
-        ProductController productControl = new ProductController(connect);
-        QuickSearchController quickSearch = new QuickSearchController(connect);
+        BaseController _baseManager=new BaseController(connect);
+        AdminController _adminManager = new AdminController(connect);
+        HomeController _homeManager = new HomeController(connect);
+        ProductController _productManager = new ProductController(connect);
+        QuickSearchController _quickSearchManager = new QuickSearchController(connect);
         int choice;
         do {
-            auth.showMainMenu();
-            choice=auth.enterChoice();
+            _baseManager.showMainMenu();
+            choice=_baseManager.enterNumber("Options");
             switch (choice) {
                 case 1:
-                    auth.login();
+                    _adminManager.login();
                     break;
                 case 2:
-                    home.ShowMenu();
+                    _homeManager.manageMenu();
                     break;
                 case 3:
-                    quickSearch.showMenu();
+                    _quickSearchManager.showMenu();
                     break;
                 case 4:
-                    productControl.showFilterMenu();
+                    _productManager.manageFilterMenu();
                     break;
                 case 5:
                     System.exit(0);
