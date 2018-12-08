@@ -25,7 +25,7 @@ public class BillController extends BaseController {
     public void showBillEditor() {
         makeSpace(EnumPosition.DASH_TOP);
         System.out.println("---------Bills infomation Management-----------");
-        System.out.println("1.Undeliverd bills");
+        System.out.println("1.Undelivered bills");
         System.out.println("2.Delivering bills");
         System.out.println("3.Delivered bills");
         System.out.println("4.Back to previous menu");
@@ -46,11 +46,13 @@ public class BillController extends BaseController {
                 case 3:
                     manageDelivered();
                     break;
+                case 4:
+                    break;
                 default:
                     System.out.println("Option is invalid!");
                     break;
             }
-        } while (choice != 3);
+        } while (choice != 4);
     }
 
     public void showUndelivered() {

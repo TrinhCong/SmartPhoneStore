@@ -14,11 +14,13 @@ public class AdminController extends BaseController {
 
     private final BillController _billManager;
     private final ProductController _productManager;
+    private final BrandController _brandManager;
 
     public AdminController(Connection connect) {
         super(connect);
         _billManager = new BillController(connect);
         _productManager = new ProductController(connect);
+        _brandManager=new BrandController(connect);
     }
 
     public void login() {
@@ -35,7 +37,8 @@ public class AdminController extends BaseController {
                 ResultSet rs = stm.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
                 if (rs.isBeforeFirst()) {
                     makeSpace(EnumPosition.DASH_TOP);
-                    System.out.println("Welcome Admin: " + name.trim());
+                    rs.next();
+                    System.out.println("Welcome Admin: " + rs.getString("DisplayName"));
                     interact();
                     isValid = true;
                 } else {
@@ -73,7 +76,7 @@ public class AdminController extends BaseController {
                     _productManager.manageMenu();
                     break;
                 case 2:
-                    
+                    _brandManager.manageMenu();
                     break;
                 case 3:
                     _billManager.manageMenu();
