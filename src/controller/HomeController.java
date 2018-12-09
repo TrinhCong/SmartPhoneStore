@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -68,46 +69,63 @@ public class HomeController extends BaseController {
 
     public void orderProduct() {
         boolean isStop;
+        boolean isStop1;
         int r;
         int r1;
         int r2;
         ResultSet rs1 = null;
         ResultSet rs2 = null;
         try {
+
+            Statement st = connection.createStatement();
+            Statement st1 = connection.createStatement();
+            Statement st2 = connection.createStatement();
+            System.out.println("\t---------Please enter your information---------");
+            System.out.println("\tName: ");
+            String name = sc.nextLine();
+            System.out.println("\tPhone Number: ");
+            String phonenumber = sc.nextLine();
+            System.out.println("\tEmail: ");
+            String email = sc.nextLine();
+            
             do {
                 isStop = false;
-                Statement st = connection.createStatement();
-                Statement st1 = connection.createStatement();
-                Statement st2 = connection.createStatement();
-                System.out.println("Name: ");
-                String name = sc.nextLine();
-                System.out.println("Phone Number: ");
-                String phonenumber = sc.nextLine();
-                System.out.println("Email: ");
-                String email = sc.nextLine();
-                System.out.println("ID of product you want order: ");
+                System.out.println("\tPlease enter ID of product you want order: ");
                 int Id = enterNumber("Product ID");
-                r = st.executeUpdate("insert into Customers(Name,PhoneNumber,Email) values('" + name + "','" + phonenumber + "','" + email + "')");
-                System.out.println("Insert Successfull: " + name + "\t" + phonenumber + "\n");
-                ResultSet rs = st.executeQuery("select Id from Customers");
-                while(rs.next()){
-                    String customerid = rs.getString(1);
-                    r1 = st1.executeUpdate("insert into Bills(CustomerId) values("+customerid+")");
-                }
-                rs1 = st.executeQuery("select Id from Bills");
-                while(rs1.next()){
-                    String billid = rs1.getString(1);
-                    r2= st2.executeUpdate("insert into BillsDetail(BillId) values("+billid+")");
-                }
-                System.out.println("Do you want to order more? (Y/N)");
+                System.out.println("\tPlease enter number of product: ");
+                int amountofproduct = Integer.parseInt(sc.nextLine());
+                do {
+                    isStop1 = true;
+                    System.out.println("\tDo you really want to order this product? (Y/N)");
+                    String choice1 = sc.nextLine();
+                    if (!choice1.equalsIgnoreCase("y")) {
+                        isStop1 = false;
+                    }
+                } while (!isStop1);
+                System.out.println("\tDo you want to order more? (Y/N)");
                 String choice = sc.nextLine();
                 if (!choice.equalsIgnoreCase("y")) {
                     isStop = true;
                 }
             } while (!isStop);
 
+            r = st.executeUpdate("insert into Customers(Name,PhoneNumber,Email) values('" + name + "','" + phonenumber + "','" + email + "')");
+            ResultSet rs = st.executeQuery("select Id from Customers");
+            while (rs.next()) {
+                String customerid = rs.getString(1);
+                r1 = st1.executeUpdate("insert into Bills(CustomerId) values(" + customerid + ")");
+            }
+            rs1 = st.executeQuery("select Id from Bills");
+            while (rs1.next()) {
+                String billid = rs1.getString(1);
+                r2 = st2.executeUpdate("insert into BillsDetail(BillId) values(" + billid + ")");
+            }
+
+            System.out.println("----------Successfully Order, our store will contact you and transfer products in the earliest time----------");
+
         } catch (SQLException ex) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 }
