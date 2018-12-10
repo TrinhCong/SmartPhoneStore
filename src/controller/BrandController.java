@@ -121,7 +121,7 @@ public class BrandController extends BaseController {
                 break;
             } else {
                 System.out.println("\t ID sai");
-                
+                manageMenu();
             }
         } while(false);
         int IdBrand = Integer.parseInt(id);
@@ -143,7 +143,7 @@ public class BrandController extends BaseController {
                 break;
             } else {
                 System.out.println("\t ID sai");
-                
+                manageMenu();
             }
         } while(false);
         int IdBrand = Integer.parseInt(id);
