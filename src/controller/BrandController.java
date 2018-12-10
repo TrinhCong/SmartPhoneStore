@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +23,6 @@ public class BrandController extends BaseController {
     public BrandController(Connection connect) {
         super(connect);
     }
-
 
     // method xem chi tiet san pham
     public void brandDetails() {
@@ -100,20 +101,68 @@ public class BrandController extends BaseController {
     }
 
     public void add() {
-        System.out.println("Add Brand done");
+        String NameBrand;
+        System.out.print("nhap ten hãng :");
+        NameBrand = scanner.nextLine();
+        try {
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery(" select * from BrandCategory INSERT INTO BrandCategory(Name) VALUES ('" + NameBrand + "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void delete() {
-        System.out.println("Delete Brand done");
+        String id="";
+        do {
+            System.out.print("\t nhap id can xoa: ");
+            id = scanner.nextLine();
+            if (id.isEmpty()) {
+                break;
+            } else {
+                System.out.println("\t ID sai");
+                
+            }
+        } while(false);
+        int IdBrand = Integer.parseInt(id);
+        try {
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" +IdBrand+ "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void edit() {
-        System.out.println("Edit Brand done");
+        String id="";
+        do {
+            System.out.print("nhap id can sua:");
+            id = scanner.nextLine();
+            if (id.isEmpty()) {
+                break;
+            } else {
+                System.out.println("\t ID sai");
+                
+            }
+        } while(false);
+        int IdBrand = Integer.parseInt(id);
+        System.out.print("nhap ten can sua: ");
+        String NameUpdate;
+        NameUpdate = scanner.nextLine();
+        try {
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery("select * from BrandCategory Update BrandCategory Set Name = ('" + NameUpdate + "') Where Id =('" + IdBrand + "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    public void showDetail(){
-        int Id=enterNumber("Brand Id");
+
+    public void showDetail() {
+        int Id = enterNumber("Brand Id");
         showDetailById(Id);
     }
+
     public void showDetailById(int Id) {
         try {
             Statement st = connection.createStatement();
@@ -124,10 +173,8 @@ public class BrandController extends BaseController {
                     System.out.println(" ID: " + r.getString(1)
                             + "\n Name: " + r.getString(2));
                 }
-            }
-            else
-            {
-                System.out.println("The brand has Id="+Id+" doesn't exist!");
+            } else {
+                System.out.println("The brand has Id=" + Id + " doesn't exist!");
             }
 
         } catch (SQLException ex) {
