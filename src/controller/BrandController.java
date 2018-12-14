@@ -102,62 +102,124 @@ public class BrandController extends BaseController {
         System.out.println("\n");
     }
 
+    public void showAddMenu() {
+        int choice;
+        do {
+            makeSpace(EnumPosition.DASH_TOP);
+            System.out.println("=======Add Menu======");
+            showAll();
+            System.out.println("Options:");
+            System.out.println("\t1.Add Brand");
+            System.out.println("\t2.Back to previous page");
+            choice = enterNumber("Option");
+            switch (choice) {
+                case 1:
+                    add();
+                    break;
+                case 2:
+                    break;
+                default:
+                    System.out.println("Option is invalid!");
+                    break;
+            }
+        } while (choice != 2);
+    }
+
     public void add() {
-        String NameBrand;
-        System.out.print("nhap ten hãng :");
-        NameBrand = scanner.nextLine();
-        try {
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery(" select * from BrandCategory INSERT INTO BrandCategory(Name) VALUES ('" + NameBrand + "')");
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        do {
+            try {
+                String brandName = enterString("Brand Name");
+                ResultSet rs = statement.executeQuery("select * from BrandCategory where Name='" + brandName + "'");
+                if (!rs.isBeforeFirst()) {
+                    int rowAffect = statement.executeUpdate("INSERT INTO BrandCategory(Name) VALUES ('" + brandName + "')");
+                    if (rowAffect > 0) {
+                        System.out.println("Add successfull!");
+                        showAll();
+                        System.out.println("Do you wanna add more?(y/n)");
+                        String choice = enterString("Choice");
+                        if (!choice.equalsIgnoreCase("y")) {
+                            break;
+                        }
+                    } else {
+                        System.out.println("Insert brand failed");
+                    }
+                } else {
+                    System.out.println("Brand Name already exist!");
+                    System.out.println("Do you wanna continue to add?(y/n)");
+                    String choice = enterString("Choice");
+                    if (!choice.equalsIgnoreCase("y")) {
+                        break;
+                    }
+                }
+
+            } catch (SQLException ex) {
+                exitByError();
+            }
+        } while (true);
+
     }
 
     public void delete() {
         try {
-            System.out.print("nhap id can xoa:");
-            int IdBrand = Integer.parseInt(scanner.nextLine());
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + IdBrand + "')");
+            int IdBrand = enterNumber("Brand Id");
+
+            ResultSet r = statement.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + IdBrand + "')");
             while (r.next()) {
-                if (IdBrand == r.getInt(1)) {
+                if (IdBrand == r.getInt("Id")) {
                     System.out.println("========DA XOA=====");
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+            exitByError();
         }
 
     }
 
     public void edit() {
-        int IdBrand = 0;
-        String NameUpdate = "";
-        try {
-            System.out.print("nhap id can sua:");
-            IdBrand = Integer.parseInt(scanner.nextLine());
-
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory");
-            while (r.next()) {
-                if (IdBrand == r.getInt(1)) {
-                    System.out.print("nhap ten can sua: ");
-                    NameUpdate = scanner.nextLine();
+        do {
+            try {
+                int id = enterNumber("Brand Id");
+                ResultSet r = statement.executeQuery("select * from BrandCategory where Id=" + id);
+                if (r.isBeforeFirst()) {
+                    r.next();
+                    if (id == r.getInt("Id")) {
+                        String updateName = enterString("Brand Name");
+                        ResultSet rs = statement.executeQuery("select * from BrandCategory where Name='" + updateName + "' and Id<>" + id);
+                        if (!rs.isBeforeFirst()) {
+                            int check = statement.executeUpdate(" Update BrandCategory Set Name =N'" + updateName + "' Where Id =" + id);
+                            if (check > 0) {
+                                System.out.println("Add successfull!");
+                                showAll();
+                                System.out.println("Do you wanna edit more?(y/n)");
+                                String choice = enterString("Choice");
+                                if (!choice.equalsIgnoreCase("y")) {
+                                    break;
+                                }
+                            } else {
+                                System.out.println("Insert brand failed");
+                            }
+                        } else {
+                            System.out.println("Brand Name already exist!");
+                            System.out.println("Do you wanna continue to edit another brand?(y/n)");
+                            String choice = enterString("Choice");
+                            if (!choice.equalsIgnoreCase("y")) {
+                                break;
+                            }
+                        }
+                    }
                 } else {
-                    System.out.println("ID SAI ");
-                }
-            }
+                    System.out.println("Record doesn't exist!");
+                    System.out.println("Do you wanna enter another Brand Id?(y/n)");
+                    String choice = enterString("Choice");
+                    if (!choice.equalsIgnoreCase("y")) {
+                        break;
+                    }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory Update BrandCategory Set Name = ('" + NameUpdate + "') Where Id =('" + IdBrand + "')");
-        } catch (SQLException ex) {
-            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } while (true);
     }
 
     public void showDetail() {

@@ -242,7 +242,7 @@ public class ProductController extends BaseController {
     	product=scanner.nextLine();
     	try {
             Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("INSERT INTO Products(Name) VALUES(" +product+")");
+            ResultSet rs = stm.executeQuery("INSERT INTO Products(Name) VALUES(N'" +product+"')");
     	} catch (SQLException e) {
             exitByError();
         }

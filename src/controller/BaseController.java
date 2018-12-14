@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -65,6 +67,21 @@ public class BaseController {
         return (int) Double.parseDouble(choiceStr);
     }
 
+    public String enterString(String option) {
+        System.out.print("==> Enter " + option + ":");
+        String choiceStr = "";
+        do {
+            choiceStr = scanner.nextLine();
+            if (choiceStr.trim().isEmpty()) {
+                System.out.println(option + " must has value!");
+                System.out.print("Re-enter " + option + ": ");
+            } else {
+                break;
+            }
+        } while (true);
+        return choiceStr;
+    }
+
     public void makeSpace(String position) {
         if (position.equals(EnumPosition.DASH_TOP)) {
             System.out.println("------------------------------------");
@@ -78,7 +95,13 @@ public class BaseController {
         System.exit(0);
     }
 
-    public boolean hasStringValue(String string){
+    public boolean hasStringValue(String string) {
         return string != null && !"".equals(string.trim());
+    }
+
+    public static boolean isEmail(String emailStr) {
+        Pattern emailPattern= Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = emailPattern.matcher(emailStr);
+        return matcher.find();
     }
 }

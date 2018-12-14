@@ -85,9 +85,18 @@ public class HomeController extends BaseController {
             String name = sc.nextLine();
             System.out.println("\tPhone Number: ");
             String phonenumber = sc.nextLine();
-            System.out.println("\tEmail: ");
-            String email = sc.nextLine();
-            
+            String email="";
+            do {
+                 email = enterString("Email");
+                if (isEmail(email)) {
+                    break;
+                }
+                else
+                {
+                    System.out.println("Your enter is not email! Re-enter!");
+                }
+            } while (true);
+
             do {
                 isStop = false;
                 System.out.println("\tPlease enter ID of product you want order: ");
@@ -127,5 +136,5 @@ public class HomeController extends BaseController {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
