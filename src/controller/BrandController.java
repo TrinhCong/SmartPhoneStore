@@ -117,11 +117,11 @@ public class BrandController extends BaseController {
     public void delete() {
         try {
             System.out.print("nhap id can xoa:");
-            int ID=enterNumber("ID");
+            int IdBrand = Integer.parseInt(scanner.nextLine());
             Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + ID + "')");
+            ResultSet r = st.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + IdBrand + "')");
             while (r.next()) {
-                if (ID == r.getInt(1)) {
+                if (IdBrand == r.getInt(1)) {
                     System.out.println("========DA XOA=====");
                 }
             }
@@ -144,7 +144,7 @@ public class BrandController extends BaseController {
                 if (IdBrand == r.getInt(1)) {
                     System.out.print("nhap ten can sua: ");
                     NameUpdate = scanner.nextLine();
-                }else{
+                } else {
                     System.out.println("ID SAI ");
                 }
             }
