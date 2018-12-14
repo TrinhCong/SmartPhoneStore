@@ -183,7 +183,8 @@ public class ProductController extends BaseController {
         System.out.println("\t4.Watch Product Detail");
         System.out.println("\t5.Back to previous page");
     }
-
+    
+    //menu quan li san pham
     public void manageMenu() {
         int choice;
         do {
@@ -232,18 +233,54 @@ public class ProductController extends BaseController {
         }
         System.out.println("\n");
     }
-
+    
+    //them san pham
     public void add() {
+    	System.out.println("--------------");
+    	System.out.print("Input product's name: ");
+    	String product;
+    	product=scanner.nextLine();
+    	try {
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery("INSERT INTO Products(Name) VALUES(" +product+")");
+    	} catch (SQLException e) {
+            exitByError();
+        }
         System.out.println("Add Product done");
     }
-
+    
+    // xoa san pham
     public void delete() {
+    	System.out.println("--------------");
+    	System.out.print("Input product's ID you want delete: ");
+    	int ID=enterNumber("ID");
+    	try {
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery("DELETE FROM Products WHERE ID=" +ID);
+    	} catch (SQLException e) {
+            exitByError();
+        }
         System.out.println("Delete Product done");
     }
-
+    
+    //edit san pham
     public void edit() {
+    	System.out.println("--------------");
+    	System.out.print("Input product's ID you want edit: ");
+    	int ID=enterNumber("ID");
+    	System.out.print("Input product's name you want edit: ");
+    	String editname;
+    	editname=scanner.nextLine();
+    	try {
+            Statement stm = connection.createStatement();
+            ResultSet rs = stm.executeQuery("UPDATE Products SET Name=\""+editname+"\" WHERE ID="+ID);
+    	} catch (SQLException e) {
+            exitByError();
+        }
         System.out.println("Edit Product done");
     }
+    
+    
     public void showDetail(){
         int Id=enterNumber("Product Id");
         showDetailById(Id);
