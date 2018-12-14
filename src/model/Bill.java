@@ -12,7 +12,7 @@ import java.sql.Date;
  * @author tvcpr
  */
 public class Bill {
-private int Id;
+    private int Id;
     private int CustomerId;
     private int StatusId;
     private int ShipperId;
@@ -20,6 +20,9 @@ private int Id;
     private double Total;
     private String ReceivedAddress;
     private String Note;
+    public String StatusName;
+    public String ShipperName;
+    public String CustomerName;
     /**
      * @return the Id
      */

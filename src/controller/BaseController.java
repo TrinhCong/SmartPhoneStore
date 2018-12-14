@@ -7,6 +7,8 @@ package controller;
 
 import enums.EnumPosition;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 /**
@@ -17,10 +19,17 @@ public class BaseController {
 
     protected Connection connection;
     protected Scanner scanner;
+    protected Statement statement;
 
     public BaseController(Connection connect) {
-        connection = connect;
-        scanner = new Scanner(System.in);
+        try {
+            connection = connect;
+            scanner = new Scanner(System.in);
+            statement = connection.createStatement();
+        } catch (SQLException ex) {
+            System.out.println("Connection Fail! Program is exited!");
+            System.exit(0);
+        }
     }
 
     public void showMainMenu() {
@@ -30,7 +39,7 @@ public class BaseController {
         System.out.println("3. Quick search.");
         System.out.println("4. Filter products.");
         System.out.println("5. Exit.");
-        System.out.println("-------------------------------------------------------");
+        makeSpace(EnumPosition.DASH_BOTTOM);
     }
 
     public boolean isNumeric(String str) {
@@ -58,11 +67,9 @@ public class BaseController {
 
     public void makeSpace(String position) {
         if (position.equals(EnumPosition.DASH_TOP)) {
-            System.out.println("\n");
             System.out.println("------------------------------------");
         } else if (position.equals(EnumPosition.DASH_BOTTOM)) {
             System.out.println("------------------------------------");
-            System.out.println("\n");
         }
     }
 
@@ -71,4 +78,7 @@ public class BaseController {
         System.exit(0);
     }
 
+    public boolean hasStringValue(String string){
+        return string != null && !"".equals(string.trim());
+    }
 }

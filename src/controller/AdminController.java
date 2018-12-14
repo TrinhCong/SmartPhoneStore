@@ -33,8 +33,7 @@ public class AdminController extends BaseController {
             System.out.print("Enter password:");
             String pass = scanner.nextLine();
             try {
-                Statement stm = connection.createStatement();
-                ResultSet rs = stm.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
+                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
                 if (rs.isBeforeFirst()) {
                     makeSpace(EnumPosition.DASH_TOP);
                     rs.next();
