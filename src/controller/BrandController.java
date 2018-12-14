@@ -60,13 +60,13 @@ public class BrandController extends BaseController {
             choice = enterNumber("Option");
             switch (choice) {
                 case 1:
-                    add();
+                    showAddMenu();
                     break;
                 case 2:
-                    edit();
+                    showEditMenu();
                     break;
                 case 3:
-                    delete();
+                    showDeleteMenu();
                     break;
                 case 4:
                     showDetail();
@@ -124,6 +124,50 @@ public class BrandController extends BaseController {
             }
         } while (choice != 2);
     }
+    public void showDeleteMenu() {
+        int choice;
+        do {
+            makeSpace(EnumPosition.DASH_TOP);
+            System.out.println("=======Delete Menu======");
+            showAll();
+            System.out.println("Options:");
+            System.out.println("\t1.Delete Brand");
+            System.out.println("\t2.Back to previous page");
+            choice = enterNumber("Option");
+            switch (choice) {
+                case 1:
+                    delete();
+                    break;
+                case 2:
+                    break;
+                default:
+                    System.out.println("Option is invalid!");
+                    break;
+            }
+        } while (choice != 2);
+    }
+        public void showEditMenu() {
+        int choice;
+        do {
+            makeSpace(EnumPosition.DASH_TOP);
+            System.out.println("=======Edit Menu======");
+            showAll();
+            System.out.println("Options:");
+            System.out.println("\t1.Edit Brand");
+            System.out.println("\t2.Back to previous page");
+            choice = enterNumber("Option");
+            switch (choice) {
+                case 1:
+                    edit();
+                    break;
+                case 2:
+                    break;
+                default:
+                    System.out.println("Option is invalid!");
+                    break;
+            }
+        } while (choice != 2);
+    }
 
     public void add() {
         do {
@@ -160,18 +204,30 @@ public class BrandController extends BaseController {
     }
 
     public void delete() {
-        try {
-            int IdBrand = enterNumber("Brand Id");
-
-            ResultSet r = statement.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + IdBrand + "')");
-            while (r.next()) {
-                if (IdBrand == r.getInt("Id")) {
-                    System.out.println("========DA XOA=====");
+        do {
+            try {
+                int Id = enterNumber("Brand Id");
+                ResultSet rs = statement.executeQuery("select * from BrandCategory where Id=" + Id);
+                if (rs.isBeforeFirst()) {
+                    rs.next();
+                    if (Id == rs.getInt("Id")) {
+                        int check = statement.executeUpdate("DELETE FROM BrandCategory WHERE ID=" +Id);
+                        System.out.println("remove successfull!");
+                        showAll();
+                        System.out.println("Do you wanna remove more?(y/n)");
+                        String choice = enterString("Choice");
+                        if (!choice.equalsIgnoreCase("y")) {
+                            break;
+                        }
+                    }
+                    
+                } else {
+                    System.out.println("Invalid ID");
                 }
+            } catch (SQLException ex) {
+                exitByError();
             }
-        } catch (SQLException ex) {
-            exitByError();
-        }
+        } while (true);
 
     }
 
