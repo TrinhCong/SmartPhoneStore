@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -70,6 +69,7 @@ public class HomeController extends BaseController {
     public void orderProduct() {
         boolean isStop;
         boolean isStop1;
+        boolean yn = true;
         int r;
         int r1;
         int r2;
@@ -81,18 +81,14 @@ public class HomeController extends BaseController {
             Statement st1 = connection.createStatement();
             Statement st2 = connection.createStatement();
             System.out.println("\t---------Please enter your information---------");
-            System.out.println("\tName: ");
-            String name = sc.nextLine();
-            System.out.println("\tPhone Number: ");
-            String phonenumber = sc.nextLine();
-            String email="";
+            String name = enterString("Name");
+            int phonenumber = enterNumber("Phone Number");
+            String email = "";
             do {
-                 email = enterString("Email");
+                email = enterString("Email");
                 if (isEmail(email)) {
                     break;
-                }
-                else
-                {
+                } else {
                     System.out.println("Your enter is not email! Re-enter!");
                 }
             } while (true);
@@ -100,40 +96,58 @@ public class HomeController extends BaseController {
             do {
                 isStop = false;
                 System.out.println("\tPlease enter ID of product you want order: ");
-                int Id = enterNumber("Product ID");
-                System.out.println("\tPlease enter number of product: ");
-                int amountofproduct = Integer.parseInt(sc.nextLine());
-                do {
-                    isStop1 = true;
+                int id = enterNumber("Product ID");
+                ResultSet rs3 = statement.executeQuery("select * from Products where Id=" + id);
+                if (rs3.isBeforeFirst()) {
+                    System.out.println("\tPlease enter number of product: ");
+                    int amountofproduct = enterNumber("");
+                    isStop1 = false;
                     System.out.println("\tDo you really want to order this product? (Y/N)");
-                    String choice1 = sc.nextLine();
-                    if (!choice1.equalsIgnoreCase("y")) {
-                        isStop1 = false;
+                    String choice1 = enterString("option");
+                    while (yn) {
+                        switch (choice1) {
+                            case "y":
+                                yn = false;
+                                break;
+                            case "n":
+                                yn = false;
+                                break;
+                            default:
+                                System.out.println("Please enter your choice!");
+                        }
                     }
-                } while (!isStop1);
-                System.out.println("\tDo you want to order more? (Y/N)");
-                String choice = sc.nextLine();
-                if (!choice.equalsIgnoreCase("y")) {
-                    isStop = true;
+
+                    System.out.println("\tDo you want to order more? (Y/N)");
+                    String choice = enterString("option");
+                    if (!choice.equalsIgnoreCase("y")) {
+                        isStop = true;
+                    }
+
+                    r = st.executeUpdate("insert into Customers(Name,PhoneNumber,Email) values('" + name + "','" + phonenumber + "','" + email + "')");
+                    ResultSet rs = st.executeQuery("select Id from Customers");
+                    while (rs.next()) {
+                        String customerid = rs.getString(1);
+                        r1 = st1.executeUpdate("insert into Bills(CustomerId) values(" + customerid + ")");
+                    }
+                    rs1 = st.executeQuery("select Id from Bills");
+                    while (rs1.next()) {
+                        String billid = rs1.getString(1);
+                        r2 = st2.executeUpdate("insert into BillsDetail(BillId) values(" + billid + ")");
+                    }
+
+                } else {
+                    System.out.println("This id doesn't exist");
+                    System.out.println("Do you wanna continue to add?(y/n)");
+                    String choice = enterString("Choice");
+                    if (!choice.equalsIgnoreCase("y")) {
+                        break;
+                    }
                 }
+                System.out.println("----------Successfully Order, our store will contact you and transfer products in the earliest time----------");
             } while (!isStop);
 
-            r = st.executeUpdate("insert into Customers(Name,PhoneNumber,Email) values('" + name + "','" + phonenumber + "','" + email + "')");
-            ResultSet rs = st.executeQuery("select Id from Customers");
-            while (rs.next()) {
-                String customerid = rs.getString(1);
-                r1 = st1.executeUpdate("insert into Bills(CustomerId) values(" + customerid + ")");
-            }
-            rs1 = st.executeQuery("select Id from Bills");
-            while (rs1.next()) {
-                String billid = rs1.getString(1);
-                r2 = st2.executeUpdate("insert into BillsDetail(BillId) values(" + billid + ")");
-            }
-
-            System.out.println("----------Successfully Order, our store will contact you and transfer products in the earliest time----------");
-
         } catch (SQLException ex) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+            exitByError();
         }
     }
 
