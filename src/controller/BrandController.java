@@ -6,10 +6,14 @@
 package controller;
 
 import enums.EnumPosition;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.midi.ShortMessage;
 
 /**
  *
@@ -21,7 +25,6 @@ public class BrandController extends BaseController {
     public BrandController(Connection connect) {
         super(connect);
     }
-
 
     // method xem chi tiet san pham
     public void brandDetails() {
@@ -100,20 +103,68 @@ public class BrandController extends BaseController {
     }
 
     public void add() {
-        System.out.println("Add Brand done");
+        String NameBrand;
+        System.out.print("nhap ten hãng :");
+        NameBrand = scanner.nextLine();
+        try {
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery(" select * from BrandCategory INSERT INTO BrandCategory(Name) VALUES ('" + NameBrand + "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void delete() {
-        System.out.println("Delete Brand done");
+        try {
+            System.out.print("nhap id can xoa:");
+            int IdBrand = Integer.parseInt(scanner.nextLine());
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery("select * from BrandCategory Delete from BrandCategory Where Id = BrandCategory.Id and Id = ('" + IdBrand + "')");
+            while (r.next()) {
+                if (IdBrand == r.getInt(1)) {
+                    System.out.println("========DA XOA=====");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public void edit() {
-        System.out.println("Edit Brand done");
+        int IdBrand = 0;
+        String NameUpdate = "";
+        try {
+            System.out.print("nhap id can sua:");
+            IdBrand = Integer.parseInt(scanner.nextLine());
+
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery("select * from BrandCategory");
+            while (r.next()) {
+                if (IdBrand == r.getInt(1)) {
+                    System.out.print("nhap ten can sua: ");
+                    NameUpdate = scanner.nextLine();
+                } else {
+                    System.out.println("ID SAI ");
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            Statement st = connection.createStatement();
+            ResultSet r = st.executeQuery("select * from BrandCategory Update BrandCategory Set Name = ('" + NameUpdate + "') Where Id =('" + IdBrand + "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(BrandController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    public void showDetail(){
-        int Id=enterNumber("Brand Id");
+
+    public void showDetail() {
+        int Id = enterNumber("Brand Id");
         showDetailById(Id);
     }
+
     public void showDetailById(int Id) {
         try {
             Statement st = connection.createStatement();
@@ -124,10 +175,8 @@ public class BrandController extends BaseController {
                     System.out.println(" ID: " + r.getString(1)
                             + "\n Name: " + r.getString(2));
                 }
-            }
-            else
-            {
-                System.out.println("The brand has Id="+Id+" doesn't exist!");
+            } else {
+                System.out.println("The brand has Id=" + Id + " doesn't exist!");
             }
 
         } catch (SQLException ex) {
