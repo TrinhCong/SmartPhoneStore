@@ -5,15 +5,10 @@
  */
 package controller;
 
-import enums.EnumPosition;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -28,23 +23,18 @@ public class HomeController extends BaseController {
         _productManager = new ProductController(connect);
     }
 
-    Scanner sc = new Scanner(System.in);
-
-    public void showMenu() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("----- Home -------");
-        _productManager.showAll();
-        System.out.println("Options:");
-        System.out.println("  1.Product details");
-        System.out.println("  2.Order");
-        System.out.println("  3.Back to main menu");
-    }
-
     public void manageMenu() {
         int choice;
         do {
-            showMenu();
-            choice = enterNumber("Option");
+            int length = makeMenuHeader("Home");
+            _productManager.showAll(length);
+            makeMenuRow("Options", length);
+            makeMenuRow("  1.Show product detail", length);
+            makeMenuRow("  2.Order products", length);
+            makeMenuRow("  3.Back to main menu", length);
+            makeMenuFooter(length);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
             switch (choice) {
                 case 1:
                     showDetail();

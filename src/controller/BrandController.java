@@ -6,14 +6,12 @@
 package controller;
 
 import enums.EnumPosition;
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.midi.ShortMessage;
 
 /**
  *
@@ -46,18 +44,18 @@ public class BrandController extends BaseController {
         System.out.println("-----Brand Category infomation Editor-------");
         showAll();
         System.out.println("Options:");
-        System.out.println("\t1.Add Brand");
-        System.out.println("\t2.Edit Brand");
-        System.out.println("\t3.Delete Brand");
-        System.out.println("\t4.Watch Brand Detail");
-        System.out.println("\t5.Back to previous page");
+        System.out.println("   1.Add Brand");
+        System.out.println("   2.Edit Brand");
+        System.out.println("   3.Delete Brand");
+        System.out.println("   4.Watch Brand Detail");
+        System.out.println("   5.Back to previous page");
     }
 
     public void manageMenu() {
         int choice;
         do {
             showBrandEditor();
-            choice = enterNumber("Option");
+            choice = enterNumber("an option");
             switch (choice) {
                 case 1:
                     showAddMenu();
@@ -88,7 +86,7 @@ public class BrandController extends BaseController {
             if (r.isBeforeFirst()) {
                 System.out.println("\nStore's brand list:");
                 while (r.next()) {
-                    System.out.println("\tid: " + r.getString(1) + "\tName: " + r.getString(2));
+                    System.out.println("   id: " + r.getString(1) + "   Name: " + r.getString(2));
                 }
 
             } else {
@@ -109,8 +107,8 @@ public class BrandController extends BaseController {
             System.out.println("=======Add Menu======");
             showAll();
             System.out.println("Options:");
-            System.out.println("\t1.Add Brand");
-            System.out.println("\t2.Back to previous page");
+            System.out.println("   1.Add Brand");
+            System.out.println("   2.Back to previous page");
             choice = enterNumber("Option");
             switch (choice) {
                 case 1:
@@ -131,8 +129,8 @@ public class BrandController extends BaseController {
             System.out.println("=======Delete Menu======");
             showAll();
             System.out.println("Options:");
-            System.out.println("\t1.Delete Brand");
-            System.out.println("\t2.Back to previous page");
+            System.out.println("   1.Delete Brand");
+            System.out.println("   2.Back to previous page");
             choice = enterNumber("Option");
             switch (choice) {
                 case 1:
@@ -153,8 +151,8 @@ public class BrandController extends BaseController {
             System.out.println("=======Edit Menu======");
             showAll();
             System.out.println("Options:");
-            System.out.println("\t1.Edit Brand");
-            System.out.println("\t2.Back to previous page");
+            System.out.println("   1.Edit Brand");
+            System.out.println("   2.Back to previous page");
             choice = enterNumber("Option");
             switch (choice) {
                 case 1:

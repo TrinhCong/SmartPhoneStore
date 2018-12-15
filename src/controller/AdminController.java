@@ -1,10 +1,6 @@
 package controller;
 
-import enums.EnumPosition;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
@@ -20,56 +16,53 @@ public class AdminController extends BaseController {
         super(connect);
         _billManager = new BillController(connect);
         _productManager = new ProductController(connect);
-        _brandManager=new BrandController(connect);
+        _brandManager = new BrandController(connect);
     }
 
     public void login() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("__Login__");
-        boolean isValid = false;
-        do {
-            System.out.print("Enter user name:");
-            String name = scanner.nextLine();
-            System.out.print("Enter password:");
-            String pass = scanner.nextLine();
-            try {
-                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
-                if (rs.isBeforeFirst()) {
-                    makeSpace(EnumPosition.DASH_TOP);
-                    rs.next();
-                    System.out.println("Welcome Admin: " + rs.getString("DisplayName"));
-                    interact();
-                    isValid = true;
-                } else {
-                    System.out.println("Wrong user name or password!");
-                    System.out.print("Do you want to retry? (y/n): ");
-                    String choice = scanner.nextLine();
-                    if (!choice.equalsIgnoreCase("y")) {
-                        break;
-                    }
-                }
+//        makeSpace(EnumPosition.DASH_TOP);
+//        System.out.println("__Login__");
+//        boolean isValid = false;
+//        do {
+//            System.out.print("Enter user name:");
+//            String name = scanner.nextLine();
+//            System.out.print("Enter password:");
+//            String pass = scanner.nextLine();
+//            try {
+//                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
+//                if (rs.isBeforeFirst()) {
+//                    makeSpace(EnumPosition.DASH_TOP);
+//                    rs.next();
+//                    System.out.println("Welcome Admin: " + rs.getString("DisplayName"));
+        interact();
+//                    isValid = true;
+//                } else {
+//                    System.out.println("Wrong user name or password!");
+//                    System.out.print("Do you want to retry? (y/n): ");
+//                    String choice = scanner.nextLine();
+//                    if (!choice.equalsIgnoreCase("y")) {
+//                        break;
+//                    }
+//                }
+//
+//            } catch (SQLException ex) {
+//                 exitByError();
+//            }
+//        } while (!isValid);
 
-            } catch (SQLException ex) {
-                 exitByError();
-            }
-        } while (!isValid);
-
-    }
-
-    public void showMenu() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("----- System management -----");
-        System.out.println("1.Manage Products");
-        System.out.println("2.Manage Brands");
-        System.out.println("3.Manage Product Bills");
-        System.out.println("4.Sign out and back to main menu\n");
     }
 
     public void interact() {
         int choice;
         do {
-            showMenu();
-            choice = enterNumber("Option");
+            int lenght = makeMenuHeader("System management");
+            makeMenuRow("1.Manage Products", lenght);
+            makeMenuRow("2.Manage Brands", lenght);
+            makeMenuRow("3.Manage Product Bills", lenght);
+            makeMenuRow("4.Sign out and back to main menu", lenght);
+            makeMenuFooter(lenght);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
             switch (choice) {
                 case 1:
                     _productManager.manageMenu();

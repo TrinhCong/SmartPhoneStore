@@ -173,17 +173,17 @@ public class ProductController extends BaseController {
     }
 
     public void showProductEditor() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("-----Products infomation Editor-------");
-        showAll();
-        System.out.println("Options:");
-        System.out.println("\t1.Add Product");
-        System.out.println("\t2.Edit Product");
-        System.out.println("\t3.Delete Product");
-        System.out.println("\t4.Watch Product Detail");
-        System.out.println("\t5.Back to previous page");
+        int length = makeMenuHeader("Products infomation Editor");
+        showAll(length);
+        makeMenuRow("Options:", length);
+        makeMenuRow("\t1.Add Product", length);
+        makeMenuRow("\t2.Edit Product", length);
+        makeMenuRow("\t3.Delete Product", length);
+        makeMenuRow("\t4.Watch Product Detail", length);
+        makeMenuRow("\t5.Back to previous page", length);
+        makeMenuFooter(length);
     }
-    
+
     //menu quan li san pham
     public void manageMenu() {
         int choice;
@@ -212,79 +212,78 @@ public class ProductController extends BaseController {
         } while (choice != 5);
     }
 
-    public void showAll() {
+    public void showAll(int lenght) {
+        makeDivider(lenght);
         try {
-
             Statement st = connection.createStatement();
             ResultSet r = st.executeQuery("select * from Products");
             if (r.isBeforeFirst()) {
-                System.out.println("\nStore's product list:");
+                makeRow("Store's product list:", lenght);
                 while (r.next()) {
-                    System.out.println("\tid: " + r.getString(1) + "\tName: " + r.getString(2));
+                    makeRow("   Id: " + r.getString("Id") + "   Name: " + r.getString("Name"), lenght);
                 }
 
             } else {
-                makeSpace(EnumPosition.DASH_TOP);
-                System.out.println("Store has no product!");
+                makeRow("Store has no product!", lenght);
             }
 
         } catch (SQLException ex) {
             exitByError();
         }
-        System.out.println("\n");
+        makeDivider(lenght);
     }
-    
+
     //them san pham
     public void add() {
-    	System.out.println("--------------");
-    	System.out.print("Input product's name: ");
-    	String product;
-    	product=scanner.nextLine();
-    	try {
+        System.out.println("--------------");
+        System.out.print("Input product's name: ");
+        String product;
+        product = scanner.nextLine();
+        try {
             Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("INSERT INTO Products(Name) VALUES(N'" +product+"')");
-    	} catch (SQLException e) {
+            ResultSet rs = stm.executeQuery("INSERT INTO Products(Name) VALUES(N'" + product + "')");
+        } catch (SQLException e) {
             exitByError();
         }
         System.out.println("Add Product done");
     }
-    
+
     // xoa san pham
     public void delete() {
-    	System.out.println("--------------");
-    	System.out.print("Input product's ID you want delete: ");
-    	int ID=enterNumber("ID");
-    	try {
+        System.out.println("--------------");
+        System.out.print("Input product's ID you want delete: ");
+        int ID = enterNumber("ID");
+        try {
             Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("DELETE FROM Products WHERE ID=" +ID);
-    	} catch (SQLException e) {
+            ResultSet rs = stm.executeQuery("DELETE FROM Products WHERE ID=" + ID);
+        } catch (SQLException e) {
             exitByError();
         }
         System.out.println("Delete Product done");
     }
-    
+
     //edit san pham
     public void edit() {
-    	System.out.println("--------------");
-    	System.out.print("Input product's ID you want edit: ");
-    	int ID=enterNumber("ID");
-    	System.out.print("Input product's name you want edit: ");
-    	String editname;
-    	editname=scanner.nextLine();
-    	try {
+        System.out.println("--------------");
+        System.out.print("Input product's ID you want edit: ");
+        int ID = enterNumber("ID");
+        System.out.print("Input product's name you want edit: ");
+        String editname;
+        editname = scanner.nextLine();
+        try {
             Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("UPDATE Products SET Name=\""+editname+"\" WHERE ID="+ID);
-    	} catch (SQLException e) {
+            ResultSet rs = stm.executeQuery("UPDATE Products SET Name=\"" + editname + "\" WHERE ID=" + ID);
+        } catch (SQLException e) {
             exitByError();
         }
         System.out.println("Edit Product done");
     }
-    
-    
-    public void showDetail(){
-        int Id=enterNumber("Product Id");
+
+    public void showDetail() {
+        int Id = enterNumber("Product Id");
         showDetailById(Id);
     }
+
     public void showDetailById(int Id) {
         try {
             Statement st = connection.createStatement();
@@ -314,10 +313,8 @@ public class ProductController extends BaseController {
                             + "\n Camera: " + r.getString(19)
                             + "\n CategoryId: " + r.getString(20));
                 }
-            }
-            else
-            {
-                System.out.println("The product has Id="+Id+" doesn't exist!");
+            } else {
+                System.out.println("The product has Id=" + Id + " doesn't exist!");
             }
 
         } catch (SQLException ex) {

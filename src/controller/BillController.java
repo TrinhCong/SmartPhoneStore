@@ -11,7 +11,6 @@ import enums.EnumString;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import model.Bill;
 
@@ -25,20 +24,17 @@ public class BillController extends BaseController {
         super(connect);
     }
 
-    public void showBillEditor() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("---------Bills infomation Management-----------");
-        System.out.println("1.Undelivered bills");
-        System.out.println("2.Delivering bills");
-        System.out.println("3.Delivered bills");
-        System.out.println("4.Back to previous menu");
-    }
-
     public void manageMenu() {
         int choice;
         do {
-            showBillEditor();
-            choice = enterNumber("Option");
+            int length = makeMenuHeader("Bills infomation Management");
+            makeMenuRow("1.Undelivered bills", length);
+            makeMenuRow("2.Delivering bills", length);
+            makeMenuRow("3.Delivered bills", length);
+            makeMenuRow("4.Back to previous menu", length);
+            makeMenuFooter(length);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
             switch (choice) {
                 case 1:
                     manageUndelivered();
@@ -64,7 +60,7 @@ public class BillController extends BaseController {
             if (r.isBeforeFirst()) {
                 System.out.println("Unresolved orders:");
                 while (r.next()) {
-                    System.out.println("Id: " + r.getString(1) + "\tCreated date: " + r.getString(5));
+                    System.out.println("Id: " + r.getString(1) + "   Created date: " + r.getString(5));
                 }
             } else {
                 makeSpace(EnumPosition.DASH_TOP);
@@ -76,24 +72,20 @@ public class BillController extends BaseController {
         }
     }
 
-    public void showUndeliveredMenu() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("----- Undelivered Bills Management --------");
-        showUndelivered();
-        System.out.println("1. Bill Detail");
-        System.out.println("2. Sent Bill to Shipper");
-        System.out.println("3. Delete Bill");
-        System.out.println("4. Back to previous menu");
-    }
-
     public void manageUndelivered() {
         int choice;
         do {
-            showUndeliveredMenu();
-            choice = enterNumber("Option");
+            int length = makeMenuHeader("Undelivered Bills Management");
+            makeMenuRow("1. Bill Detail", length);
+            makeMenuRow("2. Sent Bill to Shipper", length);
+            makeMenuRow("3. Delete Bill", length);
+            makeMenuRow("4. Back to previous menu", length);
+            makeMenuFooter(length);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
             switch (choice) {
                 case 1:
-                    System.out.println("1. Bill Detail");
+                    displayById(EnumBillStatus.UNPAID,length);
                     break;
                 case 2:
                     System.out.println("2. Sent Bill to Shipper");
@@ -110,15 +102,19 @@ public class BillController extends BaseController {
         } while (choice != 4);
     }
 
+    public void displayById(int statusId,int length) {
+        int billId = enterNumber("Bill Id");
+        String condition = "b.Id=" + billId + " and StatusId=" + statusId;
+        display(getBills(condition),length);
+    }
+
     public void showDelivered() {
         try {
-
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from Bills where StatusId=" + EnumBillStatus.PAID);
+            ResultSet r = statement.executeQuery("select * from Bills where StatusId=" + EnumBillStatus.PAID);
             if (r.isBeforeFirst()) {
                 System.out.println("Resolved orders:");
                 while (r.next()) {
-                    System.out.println("Id: " + r.getString(1) + "\tCreated date: " + r.getString(5));
+                    System.out.println("Id: " + r.getString(1) + "   Created date: " + r.getString(5));
                 }
             } else {
                 makeSpace(EnumPosition.DASH_TOP);
@@ -130,22 +126,19 @@ public class BillController extends BaseController {
         }
     }
 
-    public void showDeliveredMenu() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("----- Delivered Bills Management --------");
-        showDelivered();
-        System.out.println("1. Bill Detail");
-        System.out.println("2. Back to previous menu");
-    }
-
     public void manageDelivered() {
         int choice;
         do {
-            showDeliveredMenu();
-            choice = enterNumber("Option");
+            int length = makeMenuHeader("Delivered Bills Management");
+            showDelivered();
+            makeMenuRow("1. Bill Detail", length);
+            makeMenuRow("2. Back to previous menu", length);
+            makeMenuFooter(length);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
             switch (choice) {
                 case 1:
-                    showBillDetail(EnumBillStatus.PAID);
+                    showBillDetail(EnumBillStatus.PAID,length);
                     break;
                 case 2:
                     break;
@@ -156,32 +149,30 @@ public class BillController extends BaseController {
         } while (choice != 2);
     }
 
-    public void showBillDetail(int typeId) {
+    public void showBillDetail(int typeId,int length) {
         int id = enterNumber("Bill Id");
         String condition = "b.Id=" + id + " and b.StatusId=" + typeId;
         ArrayList<Bill> bills = getBills(condition);
-        display(bills);
+        display(bills,length);
     }
 
-    public void display(ArrayList<Bill> bills) {
+    public void display(ArrayList<Bill> bills,int length) {
+        makeDivider(length);
         if (bills.size() > 0) {
             for (Bill item : bills) {
-                makeSpace(EnumPosition.DASH_TOP);
-                System.out.println("Bill Id: " + item.getId());
-                System.out.println("Customer Name: " + (hasStringValue(item.CustomerName) ? item.CustomerName : EnumString.NO_INFO));
-                System.out.println("Shipper Name: " + (hasStringValue(item.ShipperName) ? item.ShipperName : EnumString.NO_INFO));
-                System.out.println("Status Name: " + (hasStringValue(item.StatusName) ? item.StatusName : EnumString.NO_INFO));
-                System.out.println("Created Date: " + (item.getCreatedDate() != null ? item.getCreatedDate() : EnumString.NO_INFO));
-                System.out.println("Received Address: " + (hasStringValue(item.getReceivedAddress()) ? item.getReceivedAddress() : EnumString.NO_INFO));
-                System.out.println("Note: " + (hasStringValue(item.getNote()) ? item.getNote() : EnumString.NO_INFO));
-                System.out.println("Total: " + item.getTotal() + " VND");
+                makeRow("Bill Id: " + item.getId(),length);
+                makeRow("Customer Name: " + (hasStringValue(item.CustomerName) ? item.CustomerName : EnumString.NO_INFO),length);
+                makeRow("Shipper Name: " + (hasStringValue(item.ShipperName) ? item.ShipperName : EnumString.NO_INFO),length);
+                makeRow("Status Name: " + (hasStringValue(item.StatusName) ? item.StatusName : EnumString.NO_INFO),length);
+                makeRow("Created Date: " + (item.getCreatedDate() != null ? item.getCreatedDate() : EnumString.NO_INFO),length);
+                makeRow("Received Address: " + (hasStringValue(item.getReceivedAddress()) ? item.getReceivedAddress() : EnumString.NO_INFO),length);
+                makeRow("Note: " + (hasStringValue(item.getNote()) ? item.getNote() : EnumString.NO_INFO),length);
+                makeRow("Total: " + item.getTotal() + " VND",length);
             }
+        } else {
+            makeRow("Bill doesn't exist!",length);
         }
-        else
-        {
-            System.out.println("Bill doesn't exist!");
-        }
-        makeSpace(EnumPosition.DASH_BOTTOM);
+        makeDivider(length);
     }
 
     public void showDelivering() {
@@ -190,7 +181,7 @@ public class BillController extends BaseController {
             if (rs.isBeforeFirst()) {
                 System.out.println("Delivering orders:");
                 while (rs.next()) {
-                    System.out.println("Id: " + rs.getString(1) + "\tCreated date: " + rs.getString(5));
+                    System.out.println("Id: " + rs.getString(1) + "   Created date: " + rs.getString(5));
                 }
             } else {
                 makeSpace(EnumPosition.DASH_TOP);
@@ -202,19 +193,17 @@ public class BillController extends BaseController {
         }
     }
 
-    public void showDeliveringMenu() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("----- Delivering Bills Management --------");
-        showDelivered();
-        System.out.println("1. Bill Detail");
-        System.out.println("2. Back to previous menu");
-    }
-
     public void manageDelivering() {
         int choice;
         do {
-            showDeliveredMenu();
-            choice = enterNumber("Option");
+            int length = makeMenuHeader("Delivering Bills Management");
+            showDelivering();
+            makeMenuRow("1. Bill Detail", length);
+            makeMenuRow("2. Back to previous menu", length);
+            makeMenuFooter(length);
+            choice = enterNumber("an option");
+            clearNetbeanConsole();
+
             switch (choice) {
                 case 1:
                     System.out.println("1. Bill Detail");
@@ -229,7 +218,7 @@ public class BillController extends BaseController {
     }
 
     public ArrayList<Bill> getBills(String condition) {
-        ArrayList<Bill> bills = new ArrayList<Bill>();
+        ArrayList<Bill> bills = new ArrayList<>();
         try {
             ResultSet rs = statement.executeQuery("select b.*,bc.Description  StatusName,ct.Name CustomerName,sp.Name ShipperName \n"
                     + "from Bills b, BillStatusCategory bc,Shippers sp,Customers ct\n"
