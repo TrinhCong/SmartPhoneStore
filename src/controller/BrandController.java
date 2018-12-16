@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.midi.ShortMessage;
 
 /**
  *
@@ -53,8 +52,6 @@ public class BrandController extends BaseController {
             makeMenuRow("   5.Back to previous page");
             makeMenuFooter();
             choice = enterNumber("an option");
-
-
             switch (choice) {
                 case 1:
                     showAddMenu();
@@ -84,10 +81,7 @@ public class BrandController extends BaseController {
             if (r.isBeforeFirst()) {
                 makeRow("Store's brand list:");
                 while (r.next()) {
-
                     makeRow("   id: " + r.getString(1) + "   Name: " + r.getString(2));
-
-
                 }
 
             } else {
@@ -109,7 +103,6 @@ public class BrandController extends BaseController {
             makeMenuRow("   1.Add Brand");
             makeMenuRow("   2.Back to previous page");
             choice = enterNumber("an option");
-
             switch (choice) {
                 case 1:
                     add();

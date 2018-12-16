@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import static java.time.LocalTime.now;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import model.Bill;

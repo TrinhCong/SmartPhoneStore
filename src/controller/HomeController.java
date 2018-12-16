@@ -7,9 +7,6 @@ package controller;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import model.BillDetail;
-import model.Customer;
 import model.Product;
 import viewmodel.BillInfo;
 
