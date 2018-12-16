@@ -16,6 +16,7 @@ public class BillDetail {
     private int ProductId;
     private int Quantity;
     private double Price;
+    public String ProductName;
     /**
      * @return the Id
      */

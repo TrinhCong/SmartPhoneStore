@@ -5,7 +5,6 @@
  */
 package controller;
 
-import enums.EnumPosition;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +30,7 @@ public class BrandController extends BaseController {
             Statement stm = connection.createStatement();
             ResultSet rs = stm.executeQuery("Select * from BrandCategory where ID=" + ID);
             while (rs.next()) {
-                System.out.println("id: " + rs.getString(1) + "\nName: " + rs.getString(2) + "\nPrice: " + rs.getString(3) + "\nBrandId: " + rs.getString(4) + "\nBrandName: " + rs.getString(5) + "\n");
+                makeRow("id: " + rs.getString(1) + "Name: " + rs.getString(2) + "Price: " + rs.getString(3) + "BrandId: " + rs.getString(4) + "BrandName: " + rs.getString(5) + "");
             }
         } catch (SQLException e) {
             exitByError();
@@ -39,22 +38,18 @@ public class BrandController extends BaseController {
 
     }
 
-    public void showBrandEditor() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("-----Brand Category infomation Editor-------");
-        showAll();
-        System.out.println("Options:");
-        System.out.println("   1.Add Brand");
-        System.out.println("   2.Edit Brand");
-        System.out.println("   3.Delete Brand");
-        System.out.println("   4.Watch Brand Detail");
-        System.out.println("   5.Back to previous page");
-    }
-
     public void manageMenu() {
         int choice;
         do {
-            showBrandEditor();
+            makeMenuHeader("Brand Category infomation Editor");
+            showAll();
+            makeMenuRow("Options:");
+            makeMenuRow("   1.Add Brand");
+            makeMenuRow("   2.Edit Brand");
+            makeMenuRow("   3.Delete Brand");
+            makeMenuRow("   4.Watch Brand Detail");
+            makeMenuRow("   5.Back to previous page");
+            makeMenuFooter();
             choice = enterNumber("an option");
             switch (choice) {
                 case 1:
@@ -72,44 +67,41 @@ public class BrandController extends BaseController {
                 case 5:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    makeRow("Option is invalid!");
                     break;
             }
         } while (choice != 5);
     }
 
     public void showAll() {
+        makeDivider();
         try {
-
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory");
+            ResultSet r = statement.executeQuery("select * from BrandCategory");
             if (r.isBeforeFirst()) {
-                System.out.println("\nStore's brand list:");
+                makeRow("Store's brand list:");
                 while (r.next()) {
-                    System.out.println("   id: " + r.getString(1) + "   Name: " + r.getString(2));
+                    makeRow("   id: " + r.getString(1) + "   Name: " + r.getString(2));
                 }
 
             } else {
-                makeSpace(EnumPosition.DASH_TOP);
-                System.out.println("Store has no brand!");
+                makeRow("Store has no brand!");
             }
 
         } catch (SQLException ex) {
             exitByError();
         }
-        System.out.println("\n");
+        makeDivider();
     }
 
     public void showAddMenu() {
         int choice;
         do {
-            makeSpace(EnumPosition.DASH_TOP);
-            System.out.println("=======Add Menu======");
+            makeMenuHeader("Add Menu");
             showAll();
-            System.out.println("Options:");
-            System.out.println("   1.Add Brand");
-            System.out.println("   2.Back to previous page");
-            choice = enterNumber("Option");
+            makeMenuRow("Options:");
+            makeMenuRow("   1.Add Brand");
+            makeMenuRow("   2.Back to previous page");
+            choice = enterNumber("an option");
             switch (choice) {
                 case 1:
                     add();
@@ -117,21 +109,21 @@ public class BrandController extends BaseController {
                 case 2:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    makeRow("Option is invalid!");
                     break;
             }
         } while (choice != 2);
     }
+
     public void showDeleteMenu() {
         int choice;
         do {
-            makeSpace(EnumPosition.DASH_TOP);
-            System.out.println("=======Delete Menu======");
+            makeMenuHeader("Delete Menu");
             showAll();
-            System.out.println("Options:");
-            System.out.println("   1.Delete Brand");
-            System.out.println("   2.Back to previous page");
-            choice = enterNumber("Option");
+            makeMenuRow("Options:");
+            makeMenuRow("   1.Delete Brand");
+            makeMenuRow("   2.Back to previous page");
+            choice = enterNumber("an option");
             switch (choice) {
                 case 1:
                     delete();
@@ -139,21 +131,21 @@ public class BrandController extends BaseController {
                 case 2:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    makeRow("Option is invalid!");
                     break;
             }
         } while (choice != 2);
     }
-        public void showEditMenu() {
+
+    public void showEditMenu() {
         int choice;
         do {
-            makeSpace(EnumPosition.DASH_TOP);
-            System.out.println("=======Edit Menu======");
+            makeMenuHeader("Edit Menu");
             showAll();
-            System.out.println("Options:");
-            System.out.println("   1.Edit Brand");
-            System.out.println("   2.Back to previous page");
-            choice = enterNumber("Option");
+            makeMenuRow("Options:");
+            makeMenuRow("   1.Edit Brand");
+            makeMenuRow("   2.Back to previous page");
+            choice = enterNumber("an option");
             switch (choice) {
                 case 1:
                     edit();
@@ -161,7 +153,7 @@ public class BrandController extends BaseController {
                 case 2:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    makeRow("Option is invalid!");
                     break;
             }
         } while (choice != 2);
@@ -175,19 +167,19 @@ public class BrandController extends BaseController {
                 if (!rs.isBeforeFirst()) {
                     int rowAffect = statement.executeUpdate("INSERT INTO BrandCategory(Name) VALUES ('" + brandName + "')");
                     if (rowAffect > 0) {
-                        System.out.println("Add successfull!");
+                        makeRow("Add successfull!");
                         showAll();
-                        System.out.println("Do you wanna add more?(y/n)");
+                        makeRow("Do you wanna add more?(y/n)");
                         String choice = enterString("Choice");
                         if (!choice.equalsIgnoreCase("y")) {
                             break;
                         }
                     } else {
-                        System.out.println("Insert brand failed");
+                        makeRow("Insert brand failed");
                     }
                 } else {
-                    System.out.println("Brand Name already exist!");
-                    System.out.println("Do you wanna continue to add?(y/n)");
+                    makeRow("Brand Name already exist!");
+                    makeRow("Do you wanna continue to add?(y/n)");
                     String choice = enterString("Choice");
                     if (!choice.equalsIgnoreCase("y")) {
                         break;
@@ -209,18 +201,18 @@ public class BrandController extends BaseController {
                 if (rs.isBeforeFirst()) {
                     rs.next();
                     if (Id == rs.getInt("Id")) {
-                        int check = statement.executeUpdate("DELETE FROM BrandCategory WHERE ID=" +Id);
-                        System.out.println("remove successfull!");
+                        int check = statement.executeUpdate("DELETE FROM BrandCategory WHERE ID=" + Id);
+                        makeRow("remove successfull!");
                         showAll();
-                        System.out.println("Do you wanna remove more?(y/n)");
+                        makeRow("Do you wanna remove more?(y/n)");
                         String choice = enterString("Choice");
                         if (!choice.equalsIgnoreCase("y")) {
                             break;
                         }
                     }
-                    
+
                 } else {
-                    System.out.println("Invalid ID");
+                    makeRow("Invalid ID");
                 }
             } catch (SQLException ex) {
                 exitByError();
@@ -242,19 +234,19 @@ public class BrandController extends BaseController {
                         if (!rs.isBeforeFirst()) {
                             int check = statement.executeUpdate(" Update BrandCategory Set Name =N'" + updateName + "' Where Id =" + id);
                             if (check > 0) {
-                                System.out.println("Add successfull!");
+                                makeRow("Add successfull!");
                                 showAll();
-                                System.out.println("Do you wanna edit more?(y/n)");
+                                makeRow("Do you wanna edit more?(y/n)");
                                 String choice = enterString("Choice");
                                 if (!choice.equalsIgnoreCase("y")) {
                                     break;
                                 }
                             } else {
-                                System.out.println("Insert brand failed");
+                                makeRow("Insert brand failed");
                             }
                         } else {
-                            System.out.println("Brand Name already exist!");
-                            System.out.println("Do you wanna continue to edit another brand?(y/n)");
+                            makeRow("Brand Name already exist!");
+                            makeRow("Do you wanna continue to edit another brand?(y/n)");
                             String choice = enterString("Choice");
                             if (!choice.equalsIgnoreCase("y")) {
                                 break;
@@ -262,8 +254,8 @@ public class BrandController extends BaseController {
                         }
                     }
                 } else {
-                    System.out.println("Record doesn't exist!");
-                    System.out.println("Do you wanna enter another Brand Id?(y/n)");
+                    makeRow("Record doesn't exist!");
+                    makeRow("Do you wanna enter another Brand Id?(y/n)");
                     String choice = enterString("Choice");
                     if (!choice.equalsIgnoreCase("y")) {
                         break;
@@ -287,12 +279,12 @@ public class BrandController extends BaseController {
             ResultSet r = st.executeQuery("select * from BrandCategory");
             if (r.isBeforeFirst()) {
                 while (r.next()) {
-                    System.out.println("Brand detail:");
-                    System.out.println(" ID: " + r.getString(1)
-                            + "\n Name: " + r.getString(2));
+                    makeRow("Brand detail:");
+                    makeRow(" ID: " + r.getString(1)
+                            + " Name: " + r.getString(2));
                 }
             } else {
-                System.out.println("The brand has Id=" + Id + " doesn't exist!");
+                makeRow("The brand has Id=" + Id + " doesn't exist!");
             }
 
         } catch (SQLException ex) {

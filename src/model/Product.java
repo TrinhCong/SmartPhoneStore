@@ -29,11 +29,12 @@ public class Product {
     private String ConnectionType;
     private String Memory;
     private double PromotionPrice;
-    private double Battery;
-    private double OS;
-    private double SDCard;
-    private double Camera;
-    private double CategoryId;
+    private String Battery;
+    private String OS;
+    private String SDCard;
+    private String Camera;
+    private double BrandId;
+    public String BrandName;
     /**
      * @return the Id
      */
@@ -247,71 +248,71 @@ public class Product {
     /**
      * @return the Battery
      */
-    public double getBattery() {
+    public String getBattery() {
         return Battery;
     }
 
     /**
      * @param Battery the Battery to set
      */
-    public void setBattery(double Battery) {
+    public void setBattery(String Battery) {
         this.Battery = Battery;
     }
 
     /**
      * @return the OS
      */
-    public double getOS() {
+    public String getOS() {
         return OS;
     }
 
     /**
      * @param OS the OS to set
      */
-    public void setOS(double OS) {
+    public void setOS(String OS) {
         this.OS = OS;
     }
 
     /**
      * @return the SDCard
      */
-    public double getSDCard() {
+    public String getSDCard() {
         return SDCard;
     }
 
     /**
      * @param SDCard the SDCard to set
      */
-    public void setSDCard(double SDCard) {
+    public void setSDCard(String SDCard) {
         this.SDCard = SDCard;
     }
 
     /**
      * @return the Camera
      */
-    public double getCamera() {
+    public String getCamera() {
         return Camera;
     }
 
     /**
      * @param Camera the Camera to set
      */
-    public void setCamera(double Camera) {
+    public void setCamera(String Camera) {
         this.Camera = Camera;
     }
 
     /**
-     * @return the CategoryId
+     * @return the BrandId
      */
-    public double getCategoryId() {
-        return CategoryId;
+    public double getBrandId() {
+        return BrandId;
     }
 
     /**
-     * @param CategoryId the CategoryId to set
+     * @param BrandId the BrandId to set
      */
-    public void setCategoryId(double CategoryId) {
-        this.CategoryId = CategoryId;
+    public void setBrandId(double BrandId) {
+        this.BrandId = BrandId;
     }
     
 }

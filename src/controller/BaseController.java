@@ -5,7 +5,6 @@
  */
 package controller;
 
-import enums.EnumPosition;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,12 +25,14 @@ public class BaseController {
     protected Connection connection;
     protected Scanner scanner;
     protected Statement statement;
+    private int _rowLength;
 
     public BaseController(Connection connect) {
         try {
             connection = connect;
             scanner = new Scanner(System.in);
             statement = connection.createStatement();
+            _rowLength=58;
         } catch (SQLException ex) {
             System.out.println("Connection Fail! Program is exited!");
             System.exit(0);
@@ -38,18 +40,20 @@ public class BaseController {
     }
 
     public void showMainMenu() {
-        int length = makeMenuHeader("SMARTPHONE STORE MANAGEMENT APPLICATION");
-        makeMenuRow("1. Login with system admin role.", length);
-        makeMenuRow("2. Home.", length);
-        makeMenuRow("3. Quick search.", length);
-        makeMenuRow("4. Filter products.", length);
-        makeMenuRow("5. Exit.", length);
-        makeMenuFooter(length);
+        makeMenuHeader("SMARTPHONE STORE MANAGEMENT APPLICATION");
+        makeMenuRow("1. Login with system admin role.");
+        makeMenuRow("2. Home.");
+        makeMenuRow("3. Quick search.");
+        makeMenuRow("4. Filter products.");
+        makeMenuRow("5. Exit.");
+        makeMenuFooter();
     }
 
-    public boolean isNumeric(String str) {
+    public boolean isPositiveNumber(String str) {
         try {
             double d = Double.parseDouble(str);
+            if(d<=0)
+                return false;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -59,26 +63,51 @@ public class BaseController {
     public int enterNumber(String option) {
         String choiceStr = "";
         do {
-            System.out.print("  => Enter " + option + ":");
+            System.out.print("¤ Enter " + option + ":");
             choiceStr = scanner.nextLine();
-            if (isNumeric(choiceStr)) {
+            if (isPositiveNumber(choiceStr)) {
                 break;
             } else {
-                System.out.println(option + " must be a number!");
+                System.out.println("¤ "+option + " must be a positive number!");
             }
         } while (true);
         return (int) Double.parseDouble(choiceStr);
 
     }
+    public String enterEmail(){
+        String email = "";
+            do {
+                email = enterString("Email");
+                if (isEmail(email)) {
+                    break;
+                } else {
+                    makeRow("email is invalid! Please Re-enter!");
+                }
+            } while (true);
+            return email;
+    }
+
+    public String enterPhoneNumber(){
+        String phone = "";
+            do {
+                phone = enterString("Phone Number");
+                if (isPhoneNumber(phone)) {
+                    break;
+                } else {
+                    makeRow("Phone Number is invalid! Please Re-enter!");
+                }
+            } while (true);
+            return phone;
+    }
 
     public String enterString(String option) {
-        System.out.print("==> Enter " + option + ":");
+        System.out.print("¤ Enter " + option + ":");
         String choiceStr = "";
         do {
             choiceStr = scanner.nextLine();
             if (choiceStr.trim().isEmpty()) {
-                System.out.println(option + " must has value!");
-                System.out.print("Re-enter " + option + ": ");
+                System.out.println("¤ "+option + " must has infomation!");
+                System.out.print("¤ Re-enter " + option + ": ");
             } else {
                 break;
             }
@@ -86,13 +115,6 @@ public class BaseController {
         return choiceStr;
     }
 
-    public void makeSpace(String position) {
-        if (position.equals(EnumPosition.DASH_TOP)) {
-            System.out.println("------------------------------------");
-        } else if (position.equals(EnumPosition.DASH_BOTTOM)) {
-            System.out.println("------------------------------------");
-        }
-    }
 
     public void exitByError() {
         System.out.println("Connection Fail! Program is exited!");
@@ -109,18 +131,25 @@ public class BaseController {
         return matcher.find();
     }
 
+    public static boolean isPhoneNumber(String emailStr) {
+        Pattern emailPattern = Pattern.compile("^\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = emailPattern.matcher(emailStr);
+        return matcher.find();
+    }
+
     public int makeMenuHeader(String name) {
         System.out.println("");
         String header = ".·★¸.·'´*¤ " + name.toUpperCase() + " ¤*`'·.¸★·.";
-        if (name.length() < 10) {
+        if (name.length() < 20) {
             header = ".·★¸.·'´*¤.·★¸.·'´*¤ " + name.toUpperCase() + " ¤*`'·.¸★·.¤*`'·.¸★·.";
         }
         System.out.println(header);
-        return header.length();
+        setRowLength(header.length()+1);
+        return _rowLength;
     }
 
-    public void makeMenuRow(String option, int length) {
-        int remainSpace = length - option.length() - 4;
+    public void makeMenuRow(String option) {
+        int remainSpace = getRowLength() - option.length() - 4;
         String space = "";
         for (int i = 0; i <= remainSpace - 6; i++) {
             space += " ";
@@ -128,17 +157,17 @@ public class BaseController {
         System.out.println("¤       " + option + space + " ¤");
     }
 
-    public void makeMenuFooter(int length) {
+    public void makeMenuFooter() {
         String space = "";
-        for (int i = 0; i < length * 0.67; i++) {
+        for (int i = 0; i < getRowLength() * 0.72; i++) {
             space += "☆";
         }
         System.out.println(space);
         System.out.println("");
     }
 
-    public void makeRow(String option, int length) {
-        int remainSpace = length - option.length() - 4;
+    public void makeRow(String option) {
+        int remainSpace =getRowLength() - option.length() - 4;
         String space = "";
         for (int i = 0; i <= remainSpace; i++) {
             space += " ";
@@ -146,10 +175,17 @@ public class BaseController {
         System.out.println("¤ " + option + space + " ¤");
     }
 
-    public void makeDivider(int length) {
+    public void makeDivider() {
         String space = "";
-        for (int i = 0; i <= length - 2; i++) {
-            space += "=";
+        for (int i = 0; i <=getRowLength() - 2; i++) {
+            space +="=";
+        }
+        System.out.println("¤" + space + "¤");
+    }
+    public void makeDivider(String type) {
+        String space = "";
+        for (int i = 0; i <=getRowLength() - 2; i++) {
+            space +=type;
         }
         System.out.println("¤" + space + "¤");
     }
@@ -172,8 +208,23 @@ public class BaseController {
             pressbot.keyPress(76); // Holds L key.
             pressbot.keyRelease(17); // Releases CTRL key.
             pressbot.keyRelease(76); // Releases L key.
-        } catch (AWTException ex) {
+            TimeUnit.MILLISECONDS.sleep(5);
+        } catch (AWTException | InterruptedException ex) {
             exitByError();
         }
+    }
+
+    /**
+     * @return the _rowLength
+     */
+    public int getRowLength() {
+        return _rowLength;
+    }
+
+    /**
+     * @param _rowLength the _rowLength to set
+     */
+    public void setRowLength(int _rowLength) {
+        this._rowLength = _rowLength;
     }
 }

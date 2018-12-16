@@ -1,6 +1,9 @@
 package controller;
 
+import enums.EnumSpecialCharacter;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -20,25 +23,23 @@ public class AdminController extends BaseController {
     }
 
     public void login() {
-//        makeSpace(EnumPosition.DASH_TOP);
-//        System.out.println("__Login__");
+//        makeMenuHeader("login");
 //        boolean isValid = false;
 //        do {
-//            System.out.print("Enter user name:");
-//            String name = scanner.nextLine();
-//            System.out.print("Enter password:");
-//            String pass = scanner.nextLine();
+//            String name = enterString("user name");
+//            String pass = enterString("password");
 //            try {
 //                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
 //                if (rs.isBeforeFirst()) {
-//                    makeSpace(EnumPosition.DASH_TOP);
 //                    rs.next();
-//                    System.out.println("Welcome Admin: " + rs.getString("DisplayName"));
-        interact();
+//                    makeDivider(EnumSpecialCharacter.STAR);
+//                    makeMenuRow("Welcome Admin: " + rs.getString("DisplayName"));
+//                    makeDivider(EnumSpecialCharacter.STAR);
+                    interact();
 //                    isValid = true;
 //                } else {
-//                    System.out.println("Wrong user name or password!");
-//                    System.out.print("Do you want to retry? (y/n): ");
+//                    System.out.println("¤ Wrong user name or password!");
+//                    System.out.print("¤ Do you want to retry? (y/n): ");
 //                    String choice = scanner.nextLine();
 //                    if (!choice.equalsIgnoreCase("y")) {
 //                        break;
@@ -46,7 +47,7 @@ public class AdminController extends BaseController {
 //                }
 //
 //            } catch (SQLException ex) {
-//                 exitByError();
+//                exitByError();
 //            }
 //        } while (!isValid);
 
@@ -55,12 +56,12 @@ public class AdminController extends BaseController {
     public void interact() {
         int choice;
         do {
-            int lenght = makeMenuHeader("System management");
-            makeMenuRow("1.Manage Products", lenght);
-            makeMenuRow("2.Manage Brands", lenght);
-            makeMenuRow("3.Manage Product Bills", lenght);
-            makeMenuRow("4.Sign out and back to main menu", lenght);
-            makeMenuFooter(lenght);
+            makeMenuHeader("System management window");
+            makeMenuRow("1.Manage Products");
+            makeMenuRow("2.Manage Brands");
+            makeMenuRow("3.Manage Product Bills");
+            makeMenuRow("4.Sign out and back to main menu");
+            makeMenuFooter();
             choice = enterNumber("an option");
             clearNetbeanConsole();
             switch (choice) {
@@ -76,7 +77,7 @@ public class AdminController extends BaseController {
                 case 4:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    System.out.println("¤ Option is invalid!");
                     break;
             }
         } while (choice != 4);

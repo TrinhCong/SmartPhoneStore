@@ -6,9 +6,12 @@
 package controller;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import model.BillDetail;
+import model.Customer;
+import model.Product;
+import viewmodel.BillInfo;
 
 /**
  *
@@ -17,24 +20,26 @@ import java.sql.Statement;
 public class HomeController extends BaseController {
 
     private final ProductController _productManager;
+    private final BillController _billManager;
 
     public HomeController(Connection connect) {
         super(connect);
         _productManager = new ProductController(connect);
+        _billManager = new BillController(connect);
     }
 
     public void manageMenu() {
         int choice;
         do {
             int length = makeMenuHeader("Home");
-            _productManager.showAll(length);
-            makeMenuRow("Options", length);
-            makeMenuRow("  1.Show product detail", length);
-            makeMenuRow("  2.Order products", length);
-            makeMenuRow("  3.Back to main menu", length);
-            makeMenuFooter(length);
+            _productManager.setRowLength(length);
+            _productManager.showAll();
+            makeMenuRow("Options");
+            makeMenuRow("  1.Show product detail");
+            makeMenuRow("  2.Order products");
+            makeMenuRow("  3.Back to main menu");
+            makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
             switch (choice) {
                 case 1:
                     showDetail();
@@ -45,100 +50,96 @@ public class HomeController extends BaseController {
                 case 3:
                     break;
                 default:
-                    System.out.println("Option is invalid!");
+                    makeRow("Option is invalid!");
                     break;
             }
-        } while (choice != 2);
+        } while (choice != 3);
     }
 
     public void showDetail() {
         int Id = enterNumber("Product ID");
-        _productManager.showDetailById(Id);
+        _productManager.display(_productManager.getProducts("p.Id=" + Id));
     }
 
     public void orderProduct() {
-        boolean isStop;
-        boolean isStop1;
-        boolean yn = true;
-        int r;
-        int r1;
-        int r2;
-        ResultSet rs1 = null;
-        ResultSet rs2 = null;
-        try {
-
-            Statement st = connection.createStatement();
-            Statement st1 = connection.createStatement();
-            Statement st2 = connection.createStatement();
-            System.out.println("\t---------Please enter your information---------");
-            String name = enterString("Name");
-            int phonenumber = enterNumber("Phone Number");
-            String email = "";
+        makeMenuHeader("Product order menu");
+        BillInfo billInfo = new BillInfo();
+        billInfo.Customer.setName(enterString("Your Name"));
+        billInfo.Customer.setPhoneNumber(enterPhoneNumber());
+        billInfo.Customer.setEmail(enterEmail());
+        billInfo.Bill.setReceivedAddress(enterString("Receiving Address"));
+        int choice;
+        do {
+            billInfo = addToCart(billInfo);
             do {
-                email = enterString("Email");
-                if (isEmail(email)) {
-                    break;
-                } else {
-                    System.out.println("Your enter is not email! Re-enter!");
-                }
-            } while (true);
-
-            do {
-                isStop = false;
-                System.out.println("\tPlease enter ID of product you want order: ");
-                int id = enterNumber("Product ID");
-                ResultSet rs3 = statement.executeQuery("select * from Products where Id=" + id);
-                if (rs3.isBeforeFirst()) {
-                    System.out.println("\tPlease enter number of product: ");
-                    int amountofproduct = enterNumber("");
-                    isStop1 = false;
-                    System.out.println("\tDo you really want to order this product? (Y/N)");
-                    String choice1 = enterString("option");
-                    while (yn) {
-                        switch (choice1) {
-                            case "y":
-                                yn = false;
-                                break;
-                            case "n":
-                                yn = false;
-                                break;
-                            default:
-                                System.out.println("Please enter your choice!");
-                        }
-                    }
-
-                    System.out.println("\tDo you want to order more? (Y/N)");
-                    String choice = enterString("option");
-                    if (!choice.equalsIgnoreCase("y")) {
-                        isStop = true;
-                    }
-
-                    r = st.executeUpdate("insert into Customers(Name,PhoneNumber,Email) values('" + name + "','" + phonenumber + "','" + email + "')");
-                    ResultSet rs = st.executeQuery("select Id from Customers");
-                    while (rs.next()) {
-                        String customerid = rs.getString(1);
-                        r1 = st1.executeUpdate("insert into Bills(CustomerId) values(" + customerid + ")");
-                    }
-                    rs1 = st.executeQuery("select Id from Bills");
-                    while (rs1.next()) {
-                        String billid = rs1.getString(1);
-                        r2 = st2.executeUpdate("insert into BillsDetail(BillId) values(" + billid + ")");
-                    }
-
-                } else {
-                    System.out.println("This id doesn't exist");
-                    System.out.println("Do you wanna continue to add?(y/n)");
-                    String choice = enterString("Choice");
-                    if (!choice.equalsIgnoreCase("y")) {
+                makeRow("Options:");
+                makeRow("  1.Buy more product.");
+                makeRow("  2.Cut off products in your cart.");
+                makeRow("  3.Confirm order and back to previous menu.");
+                makeRow("  4.Cancel order and back to previous menu.");
+                makeMenuFooter();
+                choice = enterNumber("an option");
+                switch (choice) {
+                    case 1:
+                        clearNetbeanConsole();
                         break;
-                    }
+                    case 2:
+                        billInfo = removeFromCart(billInfo);
+                        break;
+                    case 3:
+                        _billManager.save(billInfo);
+                        clearNetbeanConsole();
+                        break;
+                    case 4:
+                        clearNetbeanConsole();
+                        break;
+                    default:
+                        makeRow("Option is invalid!");
+                        break;
                 }
-                System.out.println("----------Successfully Order, our store will contact you and transfer products in the earliest time----------");
-            } while (!isStop);
+            } while (choice != 1 && choice != 3 && choice != 4);
+        } while (choice != 3 && choice != 4);
+        clearNetbeanConsole();
+    }
 
-        } catch (SQLException ex) {
-            exitByError();
+    public BillInfo addToCart(BillInfo billInfo) {
+        makeRow("Enter ID of product you want to buy: ");
+        int id = enterNumber("Product ID");
+        ArrayList<Product> items = _productManager.getProducts("p.Id=" + id);
+        if (items.size() > 0) {
+            int quantity = enterNumber("Quantity");
+            billInfo.addToCart(items.get(0), quantity);
+            makeRow("Add to cart successfull!");
+        } else {
+            makeRow("Product has ID=" + id + " doesn't exist!");
         }
+        int length = makeMenuHeader("Product order menu");
+        _billManager.setRowLength(length);
+        double total = _billManager.showBillInfo(billInfo.BillDetails);
+        billInfo.Bill.setTotal(total);
+        return billInfo;
+    }
+
+    public BillInfo removeFromCart(BillInfo billInfo) {
+        makeRow("Enter ID of product you want to cut off: ");
+        int id = enterNumber("Product ID");
+        ArrayList<Product> items = _productManager.getProducts("p.Id=" + id);
+        if (items.size() > 0) {
+            int quantity = enterNumber("Quantity");
+            boolean result = billInfo.removeFromCart(items.get(0), quantity);
+            if (!result) {
+                makeRow("This product doesn't exist in your cart");
+            } else {
+                makeRow("Cut off Sucessfull");
+            }
+        } else {
+            makeRow("Product has ID=" + id + " doesn't exist!");
+        }
+        int length = makeMenuHeader("Product order menu");
+        _billManager.setRowLength(length);
+        double total = _billManager.showBillInfo(billInfo.BillDetails);
+        billInfo.Bill.setTotal(total);
+        return billInfo;
     }
 
 }

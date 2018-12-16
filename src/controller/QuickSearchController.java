@@ -6,9 +6,6 @@
 package controller;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  *
@@ -24,60 +21,35 @@ public class QuickSearchController extends BaseController {
     }
 
     public void showMenu() {
-        boolean isContinue;
+        int choice;
         do {
-            System.out.println("Option 3: QUICK SEARCH");
-            System.out.print("   Enter a keyword: ");
-            String keyword;
-            do {
-                keyword = scanner.nextLine();
-                if (keyword.trim().isEmpty()) {
-                    System.out.println("Keyword is not valid!\n Re-enter keyword:");
-                }
-            } while (keyword.trim().isEmpty());
-            isContinue = quickSearch(keyword);
-        } while (isContinue);
-
-    }
-
-    public boolean quickSearch(String keyword) {
-        try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("select * from Products AS pr, BrandCategory AS bc where pr.BrandId = bc.Id and bc.Name like '%" + keyword + "%' or pr.Name like '%" + keyword + "%' or pr.Price like '%" + keyword + "%' or pr.ImagePath like '%" + keyword + "%' or pr.Quantity like '%" + keyword + "%'  or pr.Dimension like '%" + keyword + "%' or pr.Weight like '%" + keyword + "%' or pr.Color like '%" + keyword + "%' or pr.Warranty like '%" + keyword + "%' or pr.SoundType like '%" + keyword + "%' or pr.StartPromotion like '%" + keyword + "%' or pr.EndPromotion like '%" + keyword + "%' or pr.ConnectionType like '%" + keyword + "%' or pr.Memory like '%" + keyword + "%' or pr.PromotionPrice like '%" + keyword + "%' or pr.Battery like '%" + keyword + "%' or pr.OS like '%" + keyword + "%' or pr.SDCard like '%" + keyword + "%' or pr.Camera like '%" + keyword + "%' or pr.BrandId like '%" + keyword + "%'");
-            if (rs.isBeforeFirst()) {
-                System.out.println("Result list: ");
-                while (rs.next()) {
-                    System.out.println("\t id: " + rs.getString(1) + "\tName: " + rs.getString(2));
-                }
-            } else {
-                System.out.println("\nNo product found!");
+            makeMenuHeader("QUICK SEARCH");
+            String keyword = enterString("a keyword");
+            String condition = "b.Name like '%" + keyword + "%' or p.Name like '%" + keyword + "%' or p.Price like '%" + keyword + "%' or p.ImagePath like '%" + keyword + "%' or p.Quantity like '%" + keyword + "%'  or p.Dimension like '%" + keyword + "%' or p.Weight like '%" + keyword + "%' or p.Color like '%" + keyword + "%' or p.Warranty like '%" + keyword + "%' or p.SoundType like '%" + keyword + "%' or p.StartPromotion like '%" + keyword + "%' or p.EndPromotion like '%" + keyword + "%' or p.ConnectionType like '%" + keyword + "%' or p.Memory like '%" + keyword + "%' or p.PromotionPrice like '%" + keyword + "%' or p.Battery like '%" + keyword + "%' or p.OS like '%" + keyword + "%' or p.SDCard like '%" + keyword + "%' or p.Camera like '%" + keyword + "%' or p.BrandId like '%" + keyword + "%'";
+            _productManager.displaySimple(_productManager.getProducts(condition));
+            makeRow("Options:");
+            makeRow("  1. Continue search");
+            makeRow("  2. Show product detail");
+            makeRow("  3. Back to main menu");
+            makeMenuFooter();
+            choice = enterNumber("an option");
+            do{
+            switch (choice) {
+                case 1:
+                    clearNetbeanConsole();
+                    break;
+                case 2:
+                    _productManager.showDetailById();
+                    break;
+                case 3:
+                    break;
+                default:
+                    makeRow("The option is invalid!");
+                    break;
             }
-            int choice;
-            do {
-                System.out.println("Options:");
-                System.out.println("  1. Continue search");
-                System.out.println("  2. Show product detail");
-                System.out.println("  3. Back to main menu");
-                choice = enterNumber("Option");
-                switch (choice) {
-                    case 1:
-                        showMenu();
-                        break;
-                    case 2:
-                        _productManager.showDetail();
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        System.out.println("the choice is wrong!");
-                        break;
-                }
-            } while (choice != 3);
-            return false;
-        } catch (SQLException ex) {
-            exitByError();
-            return true;
-        }
+            }
+            while(choice!=1&&choice!=3);
+        } while (choice != 3);
     }
 
 }
