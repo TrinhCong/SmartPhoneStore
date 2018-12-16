@@ -5,11 +5,6 @@
  */
 package controller;
 
-<<<<<<< HEAD
-=======
-import enums.EnumPosition;
-import java.lang.reflect.Array;
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +39,7 @@ public class BrandController extends BaseController {
 
     }
 
-<<<<<<< HEAD
+
     public void manageMenu() {
         int choice;
         do {
@@ -58,25 +53,8 @@ public class BrandController extends BaseController {
             makeMenuRow("   5.Back to previous page");
             makeMenuFooter();
             choice = enterNumber("an option");
-=======
-    public void showBrandEditor() {
-        makeSpace(EnumPosition.DASH_TOP);
-        System.out.println("-----Brand Category infomation Editor-------");
-        showAll();
-        System.out.println("Options:");
-        System.out.println("\t1.Add Brand");
-        System.out.println("\t2.Edit Brand");
-        System.out.println("\t3.Delete Brand");
-        System.out.println("\t4.Watch Brand Detail");
-        System.out.println("\t5.Back to previous page");
-    }
 
-    public void manageMenu() {
-        int choice;
-        do {
-            showBrandEditor();
-            choice = enterNumber("Option");
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
+
             switch (choice) {
                 case 1:
                     showAddMenu();
@@ -106,11 +84,10 @@ public class BrandController extends BaseController {
             if (r.isBeforeFirst()) {
                 makeRow("Store's brand list:");
                 while (r.next()) {
-<<<<<<< HEAD
+
                     makeRow("   id: " + r.getString(1) + "   Name: " + r.getString(2));
-=======
-                    System.out.println("\tid: " + r.getString(1) + "\tName: " + r.getString(2));
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
+
+
                 }
 
             } else {
@@ -128,17 +105,11 @@ public class BrandController extends BaseController {
         do {
             makeMenuHeader("Add Menu");
             showAll();
-<<<<<<< HEAD
             makeMenuRow("Options:");
             makeMenuRow("   1.Add Brand");
             makeMenuRow("   2.Back to previous page");
             choice = enterNumber("an option");
-=======
-            System.out.println("Options:");
-            System.out.println("\t1.Add Brand");
-            System.out.println("\t2.Back to previous page");
-            choice = enterNumber("Option");
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
+
             switch (choice) {
                 case 1:
                     add();
@@ -157,17 +128,10 @@ public class BrandController extends BaseController {
         do {
             makeMenuHeader("Delete Menu");
             showAll();
-<<<<<<< HEAD
             makeMenuRow("Options:");
             makeMenuRow("   1.Delete Brand");
             makeMenuRow("   2.Back to previous page");
             choice = enterNumber("an option");
-=======
-            System.out.println("Options:");
-            System.out.println("\t1.Delete Brand");
-            System.out.println("\t2.Back to previous page");
-            choice = enterNumber("Option");
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
             switch (choice) {
                 case 1:
                     delete();
@@ -186,17 +150,10 @@ public class BrandController extends BaseController {
         do {
             makeMenuHeader("Edit Menu");
             showAll();
-<<<<<<< HEAD
             makeMenuRow("Options:");
             makeMenuRow("   1.Edit Brand");
             makeMenuRow("   2.Back to previous page");
             choice = enterNumber("an option");
-=======
-            System.out.println("Options:");
-            System.out.println("\t1.Edit Brand");
-            System.out.println("\t2.Back to previous page");
-            choice = enterNumber("Option");
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
             switch (choice) {
                 case 1:
                     edit();
@@ -253,11 +210,7 @@ public class BrandController extends BaseController {
                     rs.next();
                     if (Id == rs.getInt("Id")) {
                         int check = statement.executeUpdate("DELETE FROM BrandCategory WHERE ID=" + Id);
-<<<<<<< HEAD
                         makeRow("remove successfull!");
-=======
-                        System.out.println("remove successfull!");
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
                         showAll();
                         makeRow("Do you wanna remove more?(y/n)");
                         String choice = enterString("Choice");
@@ -267,16 +220,7 @@ public class BrandController extends BaseController {
                     }
 
                 } else {
-<<<<<<< HEAD
                     makeRow("Invalid ID");
-=======
-                    System.out.println("Invalid ID");
-                    System.out.println("Do you wanna remove more?(y/n)");
-                    String choice = enterString("Choice");
-                    if (!choice.equalsIgnoreCase("y")) {
-                        break;
-                    }
->>>>>>> 0507614c039f716887e5050cb60a08f87e318249
                 }
             } catch (SQLException ex) {
                 exitByError();

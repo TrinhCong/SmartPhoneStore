@@ -208,7 +208,7 @@ public class BaseController {
             pressbot.keyPress(76); // Holds L key.
             pressbot.keyRelease(17); // Releases CTRL key.
             pressbot.keyRelease(76); // Releases L key.
-            TimeUnit.MILLISECONDS.sleep(5);
+            TimeUnit.MILLISECONDS.sleep(10);
         } catch (AWTException | InterruptedException ex) {
             exitByError();
         }
