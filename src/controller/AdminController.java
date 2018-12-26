@@ -1,6 +1,9 @@
 package controller;
 
+import enums.EnumSpecialCharacter;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -20,33 +23,33 @@ public class AdminController extends BaseController {
     }
 
     public void login() {
-//        makeMenuHeader("login");
-//        boolean isValid = false;
-//        do {
-//            String name = enterString("user name");
-//            String pass = enterString("password");
-//            try {
-//                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
-//                if (rs.isBeforeFirst()) {
-//                    rs.next();
-//                    makeDivider(EnumSpecialCharacter.STAR);
-//                    makeMenuRow("Welcome Admin: " + rs.getString("DisplayName"));
-//                    makeDivider(EnumSpecialCharacter.STAR);
+        makeMenuHeader("login");
+        boolean isValid = false;
+        do {
+            String name = enterString("user name");
+            String pass = enterString("password");
+            try {
+                ResultSet rs = statement.executeQuery("SELECT * FROM Admins WHERE UserName='" + name.trim() + "' and Password='" + pass.trim() + "' ");
+                if (rs.isBeforeFirst()) {
+                    rs.next();
+                    makeDivider(EnumSpecialCharacter.STAR);
+                    makeMenuRow("Welcome Admin: " + rs.getString("DisplayName"));
+                    makeDivider(EnumSpecialCharacter.STAR);
                     interact();
-//                    isValid = true;
-//                } else {
-//                    System.out.println("¤ Wrong user name or password!");
-//                    System.out.print("¤ Do you want to retry? (y/n): ");
-//                    String choice = scanner.nextLine();
-//                    if (!choice.equalsIgnoreCase("y")) {
-//                        break;
-//                    }
-//                }
-//
-//            } catch (SQLException ex) {
-//                exitByError();
-//            }
-//        } while (!isValid);
+                    isValid = true;
+                } else {
+                    System.out.println("¤ Wrong user name or password!");
+                    System.out.print("¤ Do you want to retry? (y/n): ");
+                    String choice = scanner.nextLine();
+                    if (!choice.equalsIgnoreCase("y")) {
+                        break;
+                    }
+                }
+
+            } catch (SQLException ex) {
+                exitByError();
+            }
+        } while (!isValid);
 
     }
 
@@ -60,7 +63,7 @@ public class AdminController extends BaseController {
             makeMenuRow("4.Sign out and back to main menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
                     _productManager.manageMenu();

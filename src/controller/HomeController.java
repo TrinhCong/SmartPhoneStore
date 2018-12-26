@@ -78,17 +78,17 @@ public class HomeController extends BaseController {
                 choice = enterNumber("an option");
                 switch (choice) {
                     case 1:
-                        clearNetbeanConsole();
+                        clearConsole();
                         break;
                     case 2:
                         billInfo = removeFromCart(billInfo);
                         break;
                     case 3:
-                        _billManager.save(billInfo);
-                        clearNetbeanConsole();
+                        _billManager.saveAll(billInfo);
+                        clearConsole();
                         break;
                     case 4:
-                        clearNetbeanConsole();
+                        clearConsole();
                         break;
                     default:
                         makeRow("Option is invalid!");
@@ -96,7 +96,7 @@ public class HomeController extends BaseController {
                 }
             } while (choice != 1 && choice != 3 && choice != 4);
         } while (choice != 3 && choice != 4);
-        clearNetbeanConsole();
+        clearConsole();
     }
 
     public BillInfo addToCart(BillInfo billInfo) {

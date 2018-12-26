@@ -36,7 +36,7 @@ public class QuickSearchController extends BaseController {
             do{
             switch (choice) {
                 case 1:
-                    clearNetbeanConsole();
+                    clearConsole();
                     break;
                 case 2:
                     _productManager.showDetailById();

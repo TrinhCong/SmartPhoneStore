@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import model.Bill;
 import model.BillDetail;
 import model.Customer;
+import model.Shipper;
 import viewmodel.BillInfo;
 
 /**
@@ -38,7 +39,7 @@ public class BillController extends BaseController {
             makeMenuRow("4.Back to previous menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
                     manageUndelivered();
@@ -58,14 +59,26 @@ public class BillController extends BaseController {
         } while (choice != 4);
     }
 
-    public void showUndelivered() {
+    public void displaySimple(int statusId) {
         makeDivider();
         try {
-            ResultSet r = statement.executeQuery("select * from Bills where StatusId=" + EnumBillStatus.UNPAID);
+            ResultSet r = statement.executeQuery("select * from Bills where StatusId=" + statusId);
             if (r.isBeforeFirst()) {
-                makeRow("Unresolved orders:");
+                switch (statusId) {
+                    case EnumBillStatus.DELIVERING:
+                        makeRow("delivering orders:");
+                        break;
+                    case EnumBillStatus.UNPAID:
+                        makeRow("Unresolved orders:");
+                        break;
+                    case EnumBillStatus.PAID:
+                        makeRow("Resolved orders:");
+                        break;
+                    default:
+                        break;
+                }
                 while (r.next()) {
-                    makeRow("Id: " + r.getString(1) + "   Created date: " + r.getString(5));
+                    makeRow("Id: " + r.getString("Id") + "   Created date: " + r.getString("CreatedDate"));
                 }
             } else {
                 makeRow("Store has no new order!");
@@ -81,22 +94,24 @@ public class BillController extends BaseController {
         int choice;
         do {
             makeMenuHeader("Undelivered Bills Management");
+            displaySimple(EnumBillStatus.UNPAID);
+            makeRow(" Options:");
             makeMenuRow("1. Bill Detail");
             makeMenuRow("2. Sent Bill to Shipper");
             makeMenuRow("3. Delete Bill");
             makeMenuRow("4. Back to previous menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
-                    displayById(EnumBillStatus.UNPAID);
+                    displayByStatusId(EnumBillStatus.UNPAID);
                     break;
                 case 2:
-                    System.out.println("2. Sent Bill to Shipper");
+                    sendBillToShipper();
                     break;
                 case 3:
-                    System.out.println("3. Delete Bill");
+                    deleteBill(EnumBillStatus.UNPAID);
                     break;
                 case 4:
                     break;
@@ -107,41 +122,119 @@ public class BillController extends BaseController {
         } while (choice != 4);
     }
 
-    public void displayById(int statusId) {
-        int billId = enterNumber("Bill Id");
-        String condition = "b.Id=" + billId + " and StatusId=" + statusId;
-        display(getBills(condition));
+    public void deleteBill(int statusId) {
+        do {
+            int billId=enterNumber("Bill ID");
+            ArrayList<Bill> bills=getBills("b.Id="+billId+" and StatusId="+statusId);
+            if(bills.size()>0){
+                try {
+                    int success=statement.executeUpdate("delete from Bills where Id="+billId);
+                    if(success>0){
+                        makeDivider();
+                        makeRow("Delete bill successful!");
+                        makeDivider();
+                        
+                    }
+                    else
+                    {
+                        makeDivider();
+                        makeRow("Delete bill fail!");
+                        makeDivider();
+                    }
+                } catch (SQLException ex) {
+                    exitByError();
+                }
+                break;
+            }
+            else{
+                makeRow("Bill doesn't exist! Please re-enter!");
+            }
+        } while (true);
+        
     }
 
-    public void showDelivered() {
-        makeDivider();
-        try {
-            ResultSet r = statement.executeQuery("select * from Bills where StatusId=" + EnumBillStatus.PAID);
-            if (r.isBeforeFirst()) {
-                makeRow("Resolved orders:");
-                while (r.next()) {
-                    makeRow("Id: " + r.getString(1) + "   Created date: " + r.getString(5));
-                }
+    public void sendBillToShipper() {
+        Bill bill = new Bill();
+        do {
+            int billId = enterNumber("Bill Id");
+            ArrayList<Bill> bills = getBills("b.Id=" + billId);
+            if (bills.size() > 0) {
+                bill = bills.get(0);
+                break;
             } else {
-                makeRow("Bill history is empty!");
+                makeRow("Bill doesn't exist! Please re-enter!");
             }
+        } while (true);
 
+        ShowShippers();
+        ArrayList<Shipper> shippers = new ArrayList<Shipper>();
+        do {
+            bill.setShipperId(enterNumber("Shipper ID"));
+            shippers = GetShippers("Id=" + bill.getShipperId());
+            if (shippers.size() > 0) {
+                break;
+            } else {
+                makeRow("Shipper doesn't exist! Please re-enter!");
+            }
+        } while (true);
+        bill.setStatusId(EnumBillStatus.DELIVERING);
+        makeDivider();
+        if (update(bill)) {
+            makeRow("Bill sent successfull!");
+        } else {
+            makeRow("Sent Bill failed!");
+        }
+        makeDivider();
+    }
+
+    public void ShowShippers() {
+        makeDivider();
+        ArrayList<Shipper> shippers = GetShippers("(1=1)");
+        if (shippers.size() > 0) {
+            for (Shipper shipper : shippers) {
+                makeRow("ID: " + shipper.getId() + "  Name: " + shipper.getName());
+            }
+        } else {
+            makeRow("No shipper found!");
+        }
+        makeDivider();
+    }
+
+    public ArrayList<Shipper> GetShippers(String condition) {
+        ArrayList<Shipper> shippers = new ArrayList<Shipper>();
+        try {
+            ResultSet rs = statement.executeQuery("select * from Shippers where " + condition);
+            while (rs.next()) {
+                Shipper shipper = new Shipper();
+                shipper.setId(rs.getInt("Id"));
+                shipper.setName(rs.getString("Name"));
+                shipper.setPhoneNumber1(rs.getString("PhoneNumber1"));
+                shipper.setPhoneNumber2(rs.getString("PhoneNumber2"));
+                shippers.add(shipper);
+            }
         } catch (SQLException ex) {
             exitByError();
         }
-        makeDivider();
+        return shippers;
+    }
+
+    public void displayByStatusId(int statusId) {
+        int billId = enterNumber("Bill Id");
+        String condition = "b.Id=" + billId + " and StatusId=" + statusId;
+        display(getBills(condition));
     }
 
     public void manageDelivered() {
         int choice;
         do {
             makeMenuHeader("Delivered Bills Management");
-            showDelivered();
+            displaySimple(EnumBillStatus.PAID);
+            makeRow(" Options:");
             makeMenuRow("1. Bill Detail");
             makeMenuRow("2. Back to previous menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
                     showBillDetail(EnumBillStatus.PAID);
@@ -156,9 +249,17 @@ public class BillController extends BaseController {
     }
 
     public void showBillDetail(int typeId) {
-        int id = enterNumber("Bill Id");
-        String condition = "b.Id=" + id + " and b.StatusId=" + typeId;
-        ArrayList<Bill> bills = getBills(condition);
+        ArrayList<Bill> bills = new ArrayList<Bill>();
+        do {
+            int id = enterNumber("Bill Id");
+            String condition = "b.Id=" + id + " and b.StatusId=" + typeId;
+            bills = getBills(condition);
+            if (bills.size() > 0) {
+                break;
+            } else {
+                makeRow("bill doesn't exist! please  re-enter!");
+            }
+        } while (true);
         display(bills);
     }
 
@@ -181,53 +282,39 @@ public class BillController extends BaseController {
         makeDivider();
     }
 
-    public void showDelivering() {
-        try {
-            ResultSet rs = statement.executeQuery("select * from Bills where StatusId=" + EnumBillStatus.DELIVERING);
-            if (rs.isBeforeFirst()) {
-                makeRow("Delivering orders:");
-                while (rs.next()) {
-                    makeRow("Id: " + rs.getString(1) + "   Created date: " + rs.getString(5));
-                }
-            } else {
-                makeRow("No product in Delivering");
-            }
-
-        } catch (SQLException ex) {
-            exitByError();
-        }
-    }
-
     public void manageDelivering() {
         int choice;
         do {
             makeMenuHeader("Delivering Bills Management");
-            showDelivering();
+            displaySimple(EnumBillStatus.DELIVERING);
+            makeRow(" Options:");
             makeMenuRow("1. Bill Detail");
-            makeMenuRow("2. Back to previous menu");
+            makeMenuRow("2. Delete Bill");
+            makeMenuRow("3. Back to previous menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
-
+            clearConsole();
             switch (choice) {
                 case 1:
-                    System.out.println("1. Bill Detail");
+                    displayByStatusId(EnumBillStatus.DELIVERING);
                     break;
                 case 2:
+                    deleteBill(EnumBillStatus.DELIVERING);
+                    break;
+                case 3:
                     break;
                 default:
                     makeRow("Option is invalid!");
                     break;
             }
-        } while (choice != 2);
+        } while (choice != 3);
     }
 
     public ArrayList<Bill> getBills(String condition) {
         ArrayList<Bill> bills = new ArrayList<>();
         try {
-            ResultSet rs = statement.executeQuery("select b.*,bc.Description  StatusName,ct.Name CustomerName,sp.Name ShipperName "
-                    + "from Bills b, BillStatusCategory bc,Shippers sp,Customers ct"
-                    + "where b.CustomerId=ct.Id and bc.Id=b.StatusId and sp.Id=b.ShipperId and ct.Id=b.CustomerId and " + condition);
+            ResultSet rs = statement.executeQuery("select b.*,bc.Description  StatusName,ct.Name CustomerName,sp.Name ShipperName \n"
+                    + "from ((Bills b left join BillStatusCategory bc on b.StatusId=bc.Id ) left join Shippers sp on sp.Id=b.ShipperId) left join Customers ct on ct.Id=b.CustomerId Where " + condition);
             while (rs.next()) {
                 Bill bill = new Bill();
                 bill.setId(rs.getInt("Id"));
@@ -262,7 +349,7 @@ public class BillController extends BaseController {
         return price;
     }
 
-    public boolean save(BillInfo info) {
+    public boolean saveAll(BillInfo info) {
         try {
             statement.executeUpdate("insert Customers(Name,PhoneNumber,Email)"
                     + " VALUES(N'" + info.Customer.getName() + "','" + info.Customer.getPhoneNumber() + "','" + info.Customer.getEmail() + "')");
@@ -287,6 +374,19 @@ public class BillController extends BaseController {
         return true;
     }
 
+    public boolean update(Bill bill) {
+        int success = 0;
+        try {
+            success = statement.executeUpdate("UPDATE SmartPhoneStore.dbo.Bills\n"
+                    + "SET CustomerId=" + bill.getCustomerId() + ", StatusId=" + bill.getStatusId() + ", ShipperId=" + bill.getShipperId() + ", CreatedDate='" + bill.getCreatedDate() + "', Total=" + bill.getTotal() + ", ReceivedAddress=N'" + bill.getReceivedAddress() + "', Note=N'" + bill.getNote() + "'\n"
+                    + "WHERE Id=" + bill.getId());
+
+        } catch (SQLException ex) {
+            exitByError();
+        }
+        return success > 0;
+    }
+
     public int getCustomerId(Customer customer) {
         if (customer.getId() > 0) {
             return customer.getId();
@@ -299,7 +399,6 @@ public class BillController extends BaseController {
                 } else {
                     return 0;
                 }
-
             } catch (SQLException ex) {
                 exitByError();
             }
@@ -319,7 +418,6 @@ public class BillController extends BaseController {
                 } else {
                     return 0;
                 }
-
             } catch (SQLException ex) {
                 exitByError();
             }

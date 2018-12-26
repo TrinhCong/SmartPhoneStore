@@ -23,7 +23,8 @@ public class SmartPhoneStore {
         do {
             _baseManager.showMainMenu();
             choice = _baseManager.enterNumber("an option");
-            _baseManager.clearNetbeanConsole();
+            _baseManager.clearConsole();
+            
             switch (choice) {
                 case 1:
                     _adminManager.login();

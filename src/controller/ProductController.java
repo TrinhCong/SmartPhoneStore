@@ -8,7 +8,6 @@ package controller;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import model.Product;
 
@@ -35,7 +34,7 @@ public class ProductController extends BaseController {
             makeMenuRow("3.Back to previous menu");
             makeMenuFooter();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
                     filterByPrice();
@@ -81,10 +80,10 @@ public class ProductController extends BaseController {
                         showDetailById();
                         break;
                     case 2:
-                        clearNetbeanConsole();
+                        clearConsole();
                         break;
                     case 3:
-                        clearNetbeanConsole();
+                        clearConsole();
                         break;
                     default:
                         makeRow("Option is invalid!");
@@ -98,8 +97,8 @@ public class ProductController extends BaseController {
     public void filterByBrand() {
         int choice;
         do {
-           int length= makeMenuHeader("filter by brand");
-           _brandManager.setRowLength(length);
+            int length = makeMenuHeader("filter by brand");
+            _brandManager.setRowLength(length);
             _brandManager.showAll();
             int brandId = enterNumber("Brand Id");
             displaySimple(getProducts("p.BrandId=" + brandId));
@@ -110,7 +109,7 @@ public class ProductController extends BaseController {
                 makeRow("  3.Back to previous menu");
                 makeMenuFooter();
                 choice = enterNumber("an option");
-                clearNetbeanConsole();
+                clearConsole();
                 switch (choice) {
                     case 1:
                         showDetailById();
@@ -139,16 +138,18 @@ public class ProductController extends BaseController {
         makeMenuRow("   5.Back to previous page");
         makeMenuFooter();
     }
-    public void showAll(){
+
+    public void showAll() {
         displaySimple(getProducts("(1=1)"));
     }
+
     //menu quan li san pham
     public void manageMenu() {
         int choice;
         do {
             showProductEditor();
             choice = enterNumber("an option");
-            clearNetbeanConsole();
+            clearConsole();
             switch (choice) {
                 case 1:
                     add();
@@ -171,47 +172,232 @@ public class ProductController extends BaseController {
         } while (choice != 5);
     }
 
-
     //them san pham
     public void add() {
-        makeRow("--------------");
-        String product = enterString("Product name");
-        try {
-            statement.executeUpdate("INSERT INTO Products(Name) VALUES(N'" + product + "')");
-        } catch (SQLException e) {
-            exitByError();
+        Product product = new Product();
+        product.setName(enterString("Product Name"));
+        product.setPrice(enterNumber("Price"));
+        product.setImagePath(enterString("Image Path"));
+        product.setQuantity(enterNumber("Quantity"));
+        product.setDimension(enterString("Dimension"));
+        product.setWeight(enterNumber("Weight"));
+        product.setColor(enterString("Color"));
+        product.setWarranty(enterBoolean("Warranty"));
+        product.setSoundType(enterString("SoundType"));
+        product.setStartPromotion(enterDate("StartPromotion"));
+        product.setEndPromotion(enterDate("EndPromotion"));
+        product.setConnectionType(enterString("ConnectionType"));
+        product.setMemory(enterString("Memory"));
+        product.setPromotionPrice(enterNumber("PromotionPrice"));
+        product.setBattery(enterString("Battery"));
+        product.setOS(enterString("OS"));
+        product.setSDCard(enterString("SDCard"));
+        product.setCamera(enterString("Camera"));
+        _brandManager.showAll();
+        do {
+
+            int brandId = enterNumber("Brand Id");
+            if (_brandManager.isExist(brandId)) {
+                product.setBrandId(brandId);
+                break;
+            } else {
+                makeRow("Brand ID doesn't exist! Please re-enter!");
+            }
+        } while (true);
+        makeDivider();
+        if (saveOrUpdate(product)) {
+            makeRow("Add Product successfull!");
+        } else {
+            makeRow("Add Product failed!");
         }
-        makeRow("Add Product successfull");
+        makeDivider();
+    }
+
+    public boolean saveOrUpdate(Product product) {
+        try {
+            String sql = "";
+            if (product.getId() == 0) {
+                sql = "INSERT INTO Products\n"
+                        + "(Name, Price, ImagePath, Quantity, Dimension, Weight, Color, Warranty, SoundType, StartPromotion, EndPromotion, ConnectionType, Memory, PromotionPrice, Battery, OS, SDCard, Camera, BrandId)\n"
+                        + "VALUES(N'" + product.getName() + "',\n"
+                        + product.getPrice() + ",\n"
+                        + "N'" + product.getImagePath() + "', \n"
+                        + product.getQuantity() + ", \n"
+                        + "N'" + product.getDimension() + "', \n"
+                        + product.getWeight() + ", \n"
+                        + "N'" + product.getColor() + "', \n"
+                        + (product.isWarranty() ? 1 : 0) + ", \n"
+                        + "N'" + product.getSoundType() + "',\n"
+                        + "N'" + product.getStartPromotion() + "',\n"
+                        + "N'" + product.getEndPromotion() + "', \n"
+                        + "N'" + product.getConnectionType() + "', \n"
+                        + "N'" + product.getMemory() + "',\n"
+                        + product.getPrice() + ", \n"
+                        + "N'" + product.getPromotionPrice() + "', \n"
+                        + "N'" + product.getOS() + "', \n"
+                        + "N'" + product.getSDCard() + "', \n"
+                        + "N'" + product.getCamera() + "', \n"
+                        + product.getBrandId() + ")";
+            } else {
+                sql = "UPDATE Products\n"
+                        + "SET Name=N'" + product.getName() + "',\n"
+                        + "Price=" + product.getPrice() + ",\n"
+                        + "ImagePath=N'" + product.getImagePath() + "',\n"
+                        + "Quantity=" + product.getQuantity() + ", Dimension='',\n"
+                        + "Weight=" + product.getWeight() + ",\n"
+                        + "Color=N'" + product.getColor() + "',\n"
+                        + "Warranty=" + (product.isWarranty() ? 1 : 0) + ",\n"
+                        + "SoundType=N'" + product.getSoundType() + "',\n"
+                        + "StartPromotion=N'" + product.getStartPromotion() + "',\n"
+                        + "EndPromotion=N'" + product.getEndPromotion() + "',\n"
+                        + "ConnectionType=N'" + product.getConnectionType() + "',\n"
+                        + "Memory=N'" + product.getMemory() + "',\n"
+                        + "PromotionPrice=" + product.getPromotionPrice() + ",\n"
+                        + "Battery=N'" + product.getBattery() + "',\n"
+                        + "OS=N'" + product.getOS() + "',\n"
+                        + "SDCard=N'" + product.getSDCard() + "',\n"
+                        + "Camera=N'" + product.getCamera() + "',\n"
+                        + "BrandId=" + product.getBrandId() + "\n"
+                        + "WHERE Id=" + product.getId();
+            }
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
     // xoa san pham
     public void delete() {
-        makeRow("--------------");
-        int ID = enterNumber("Product Id");
-        try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("DELETE FROM Products WHERE ID=" + ID);
-        } catch (SQLException e) {
-            exitByError();
-        }
-        makeRow("Delete Product successfull");
+        do {
+            try {
+                int Id = enterNumber("Product ID");
+                if (getProducts("p.Id=" + Id).size() > 0) {
+                    int rows = statement.executeUpdate("DELETE FROM Products WHERE Id=" + Id);
+                    if (rows > 0) {
+                        makeDivider();
+                        makeRow("Delete Product successfull");
+                        makeDivider();
+                    }
+                    else
+                    {
+                        makeDivider();
+                        makeRow("Delete Product failed!");
+                        makeDivider();
+                    }
+                    break;
+                } else {
+                    makeRow("The product has ID = " + Id + " doesn't exist! Re-enter Product Id!");
+                }
+            } catch (SQLException e) {
+                exitByError();
+            }
+        } while (true);
+
     }
 
     //edit san pham
     public void edit() {
-        makeRow("--------------");
-        makeRow("Input product's ID you want edit: ");
-        int ID = enterNumber("ID");
-        makeRow("Input product's name you want edit: ");
-        String editname;
-        editname = scanner.nextLine();
-        try {
-            Statement stm = connection.createStatement();
-            ResultSet rs = stm.executeQuery("UPDATE Products SET Name=\"" + editname + "\" WHERE ID=" + ID);
-        } catch (SQLException e) {
-            exitByError();
+        Product product = new Product();
+        do {
+            int Id = enterNumber("Product ID");
+            ArrayList<Product> products = getProducts("p.Id=" + Id);
+            if (products.size() > 0) {
+                product = products.get(0);
+                break;
+            } else {
+                makeRow("Product has ID = " + Id + " is doesn't exist! Please re-enter!");
+            }
+        } while (true);
+
+        makeDivider();
+        makeRow("Product detail:");
+        makeRow(" ID: " + product.getId());
+        makeRow(" 1. Name: " + product.getName());
+        makeRow(" 2. Price: " + product.getPrice());
+        makeRow(" 3. ImagePath: " + product.getImagePath());
+        makeRow(" 4. Quantity: " + product.getQuantity());
+        makeRow(" 5. Dimension: " + product.getDimension());
+        makeRow(" 6. Weight: " + product.getWeight());
+        makeRow(" 7. Color: " + product.getColor());
+        makeRow(" 8. Warranty: " + (product.isWarranty() ? "yes" : "no"));
+        makeRow("09. Sound Type: " + product.getSoundType());
+        makeRow("10. Start Promotion: " + product.getStartPromotion());
+        makeRow("11. End Promotion: " + product.getEndPromotion());
+        makeRow("12. Connection Type: " + product.getConnectionType());
+        makeRow("13. Memory: " + product.getMemory());
+        makeRow("14. Promotion Price: " + product.getPromotionPrice());
+        makeRow("15. Battery: " + product.getBattery());
+        makeRow("16. OS: " + product.getOS());
+        makeRow("17. SDCard: " + product.getSDCard());
+        makeRow("18. Camera: " + product.getCamera());
+        makeDivider();
+        int index = enterNumber("index number you want to edit infomation");
+        switch (index) {
+            case 1:
+                product.setName(enterString("Product Name"));
+                break;
+            case 2:
+                product.setPrice(enterNumber("Price"));
+                break;
+            case 3:
+                product.setImagePath(enterString("Image Path"));
+                break;
+            case 4:
+                product.setQuantity(enterNumber("Quantity"));
+                break;
+            case 5:
+                product.setDimension(enterString("Dimension"));
+                break;
+            case 6:
+                product.setWeight(enterNumber("Weight"));
+                break;
+            case 7:
+                product.setColor(enterString("Color"));
+                break;
+            case 8:
+                product.setWarranty(enterBoolean("Warranty"));
+                break;
+            case 9:
+                product.setSoundType(enterString("Sound Type"));
+                break;
+            case 10:
+                product.setStartPromotion(enterDate("Start Promotion"));
+                break;
+            case 11:
+                product.setEndPromotion(enterDate("Start Promotion"));
+                break;
+            case 12:
+                product.setConnectionType(enterString("Connection Type"));
+                break;
+            case 13:
+                product.setMemory(enterString("Memory"));
+                break;
+            case 14:
+                product.setPromotionPrice(enterNumber("Promotion Price"));
+                break;
+            case 15:
+                product.setBattery(enterString("Battery"));
+                break;
+            case 16:
+                product.setOS(enterString("OS"));
+                break;
+            case 17:
+                product.setSDCard(enterString("SD Card"));
+                break;
+            case 18:
+                product.setCamera(enterString("Camera"));
+                break;
+            default:
+                break;
         }
-        makeRow("Edit Product done");
+        makeDivider();
+        if (saveOrUpdate(product)) {
+            makeRow("Update Product successfull!");
+        } else {
+            makeRow("Update Product failed!");
+        }
+        makeDivider();
     }
 
     public void showDetailById() {
@@ -280,8 +466,8 @@ public class ProductController extends BaseController {
                 product.setColor(rs.getString("Color"));
                 product.setWarranty(rs.getBoolean("Warranty"));
                 product.setSoundType(rs.getString("SoundType"));
-                product.setStartPromotion(rs.getDate("StartPromotion"));
-                product.setEndPromotion(rs.getDate("EndPromotion"));
+                product.setStartPromotion(rs.getString("StartPromotion"));
+                product.setEndPromotion(rs.getString("EndPromotion"));
                 product.setConnectionType(rs.getString("ConnectionType"));
                 product.setMemory(rs.getString("Memory"));
                 product.setPromotionPrice(rs.getDouble("PromotionPrice"));

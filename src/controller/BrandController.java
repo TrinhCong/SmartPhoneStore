@@ -38,7 +38,6 @@ public class BrandController extends BaseController {
 
     }
 
-
     public void manageMenu() {
         int choice;
         do {
@@ -48,8 +47,8 @@ public class BrandController extends BaseController {
             makeMenuRow("   1.Add Brand");
             makeMenuRow("   2.Edit Brand");
             makeMenuRow("   3.Delete Brand");
-            makeMenuRow("   4.Watch Brand Detail");
-            makeMenuRow("   5.Back to previous page");
+//            makeMenuRow("   4.Watch Brand Detail");
+            makeMenuRow("   4.Back to previous page");
             makeMenuFooter();
             choice = enterNumber("an option");
             switch (choice) {
@@ -63,15 +62,12 @@ public class BrandController extends BaseController {
                     showDeleteMenu();
                     break;
                 case 4:
-                    showDetail();
-                    break;
-                case 5:
                     break;
                 default:
                     makeRow("Option is invalid!");
                     break;
             }
-        } while (choice != 5);
+        } while (choice != 4);
     }
 
     public void showAll() {
@@ -81,9 +77,8 @@ public class BrandController extends BaseController {
             if (r.isBeforeFirst()) {
                 makeRow("Store's brand list:");
                 while (r.next()) {
-                    makeRow("   id: " + r.getString(1) + "   Name: " + r.getString(2));
+                    makeRow("   ID: " + r.getString(1) + "   Name: " + r.getString(2));
                 }
-
             } else {
                 makeRow("Store has no brand!");
             }
@@ -168,7 +163,9 @@ public class BrandController extends BaseController {
                 if (!rs.isBeforeFirst()) {
                     int rowAffect = statement.executeUpdate("INSERT INTO BrandCategory(Name) VALUES ('" + brandName + "')");
                     if (rowAffect > 0) {
+                        makeDivider();
                         makeRow("Add successfull!");
+                        makeDivider();
                         showAll();
                         makeRow("Do you wanna add more?(y/n)");
                         String choice = enterString("Choice");
@@ -176,7 +173,9 @@ public class BrandController extends BaseController {
                             break;
                         }
                     } else {
+                        makeDivider();
                         makeRow("Insert brand failed");
+                        makeDivider();
                     }
                 } else {
                     makeRow("Brand Name already exist!");
@@ -203,7 +202,16 @@ public class BrandController extends BaseController {
                     rs.next();
                     if (Id == rs.getInt("Id")) {
                         int check = statement.executeUpdate("DELETE FROM BrandCategory WHERE ID=" + Id);
-                        makeRow("remove successfull!");
+                        if (check > 0) {
+                            makeDivider();
+                            makeRow("Delete brand successfull!");
+                            makeDivider();
+                        }
+                        else{
+                            makeDivider();
+                            makeRow("Delete brand failed!");
+                            makeDivider();
+                        }
                         showAll();
                         makeRow("Do you wanna remove more?(y/n)");
                         String choice = enterString("Choice");
@@ -235,7 +243,9 @@ public class BrandController extends BaseController {
                         if (!rs.isBeforeFirst()) {
                             int check = statement.executeUpdate(" Update BrandCategory Set Name =N'" + updateName + "' Where Id =" + id);
                             if (check > 0) {
+                                makeDivider();
                                 makeRow("Add successfull!");
+                                makeDivider();
                                 showAll();
                                 makeRow("Do you wanna edit more?(y/n)");
                                 String choice = enterString("Choice");
@@ -243,7 +253,9 @@ public class BrandController extends BaseController {
                                     break;
                                 }
                             } else {
+                                makeDivider();
                                 makeRow("Insert brand failed");
+                                makeDivider();
                             }
                         } else {
                             makeRow("Brand Name already exist!");
@@ -276,8 +288,7 @@ public class BrandController extends BaseController {
 
     public void showDetailById(int Id) {
         try {
-            Statement st = connection.createStatement();
-            ResultSet r = st.executeQuery("select * from BrandCategory");
+            ResultSet r = statement.executeQuery("select * from BrandCategory");
             if (r.isBeforeFirst()) {
                 while (r.next()) {
                     makeRow("Brand detail:");
@@ -290,6 +301,15 @@ public class BrandController extends BaseController {
 
         } catch (SQLException ex) {
             exitByError();
+        }
+    }
+
+    public boolean isExist(int Id) {
+        try {
+            ResultSet r = statement.executeQuery("select * from BrandCategory where Id=" + Id);
+            return r.isBeforeFirst();
+        } catch (SQLException ex) {
+            return false;
         }
     }
 }

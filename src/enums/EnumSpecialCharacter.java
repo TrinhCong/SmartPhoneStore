@@ -10,8 +10,11 @@ package enums;
  * @author tvcpr
  */
 public final class EnumSpecialCharacter {
-    public static final String STAR="☆";
-    public static final String SOLID_STAR="★";
-    public static final String BULLET="¤";
+//    public static final String STAR="☆";
+//    public static final String SOLID_STAR="★";
+//    public static final String BULLET="¤";
+    public static final String STAR="*";
+    public static final String SOLID_STAR="*";
+    public static final String BULLET="*";
     
 }

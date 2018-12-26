@@ -10,7 +10,6 @@ package model;
  * @author tvcpr
  */
 public class BillDetail {
-
     private int Id;
     private int BillId;
     private int ProductId;

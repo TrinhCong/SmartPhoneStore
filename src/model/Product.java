@@ -5,8 +5,6 @@
  */
 package model;
 
-import java.sql.Date;
-
 /**
  *
  * @author tvcpr
@@ -24,8 +22,8 @@ public class Product {
     private String Color;
     private boolean Warranty;
     private String SoundType;
-    private Date StartPromotion;
-    private Date EndPromotion;
+    private String StartPromotion;
+    private String EndPromotion;
     private String ConnectionType;
     private String Memory;
     private double PromotionPrice;
@@ -178,28 +176,28 @@ public class Product {
     /**
      * @return the StartPromotion
      */
-    public Date getStartPromotion() {
+    public String getStartPromotion() {
         return StartPromotion;
     }
 
     /**
      * @param StartPromotion the StartPromotion to set
      */
-    public void setStartPromotion(Date StartPromotion) {
+    public void setStartPromotion(String StartPromotion) {
         this.StartPromotion = StartPromotion;
     }
 
     /**
      * @return the EndPromotion
      */
-    public Date getEndPromotion() {
+    public String getEndPromotion() {
         return EndPromotion;
     }
 
     /**
      * @param EndPromotion the EndPromotion to set
      */
-    public void setEndPromotion(Date EndPromotion) {
+    public void setEndPromotion(String EndPromotion) {
         this.EndPromotion = EndPromotion;
     }
 
