@@ -51,6 +51,7 @@ public class BrandController extends BaseController {
             makeMenuRow("   4.Back to previous page");
             makeMenuFooter();
             choice = enterNumber("an option");
+            clearConsole();
             switch (choice) {
                 case 1:
                     showAddMenu();
@@ -77,7 +78,11 @@ public class BrandController extends BaseController {
             if (r.isBeforeFirst()) {
                 makeRow("Store's brand list:");
                 while (r.next()) {
-                    makeRow("   ID: " + r.getString(1) + "   Name: " + r.getString(2));
+                    if (r.getInt("Id") > 9) {
+                        makeRow("   ID: " + r.getInt("Id") + "  Name: " + r.getString("Name"));
+                    }
+                    else 
+                        makeRow("   ID: " + r.getInt("Id") + "   Name: " + r.getString("Name"));
                 }
             } else {
                 makeRow("Store has no brand!");
@@ -92,7 +97,7 @@ public class BrandController extends BaseController {
     public void showAddMenu() {
         int choice;
         do {
-            makeMenuHeader("Add Menu");
+            makeMenuHeader("Add Brand Menu");
             showAll();
             makeMenuRow("Options:");
             makeMenuRow("   1.Add Brand");
@@ -114,7 +119,7 @@ public class BrandController extends BaseController {
     public void showDeleteMenu() {
         int choice;
         do {
-            makeMenuHeader("Delete Menu");
+            makeMenuHeader("Delete Brand Menu");
             showAll();
             makeMenuRow("Options:");
             makeMenuRow("   1.Delete Brand");
@@ -136,7 +141,7 @@ public class BrandController extends BaseController {
     public void showEditMenu() {
         int choice;
         do {
-            makeMenuHeader("Edit Menu");
+            makeMenuHeader("Edit Brand Menu");
             showAll();
             makeMenuRow("Options:");
             makeMenuRow("   1.Edit Brand");
@@ -206,8 +211,7 @@ public class BrandController extends BaseController {
                             makeDivider();
                             makeRow("Delete brand successfull!");
                             makeDivider();
-                        }
-                        else{
+                        } else {
                             makeDivider();
                             makeRow("Delete brand failed!");
                             makeDivider();

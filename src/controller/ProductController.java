@@ -57,8 +57,8 @@ public class ProductController extends BaseController {
         do {
             do {
                 makeMenuHeader("Filter by price");
-                double minprice = enterNumber("Min price");
-                double maxprice = enterNumber("Max price");
+                double minprice = enterRealNumber("Min price");
+                double maxprice = enterRealNumber("Max price");
                 //bat loi minprice lon hon maxprice           	        	
                 if (minprice > maxprice) {
                     makeRow("Min price must be less or equal than max price!");
@@ -149,9 +149,9 @@ public class ProductController extends BaseController {
         do {
             showProductEditor();
             choice = enterNumber("an option");
-            clearConsole();
             switch (choice) {
                 case 1:
+                    clearConsole();
                     add();
                     break;
                 case 2:
@@ -164,6 +164,7 @@ public class ProductController extends BaseController {
                     showDetailById();
                     break;
                 case 5:
+                    clearConsole();
                     break;
                 default:
                     makeRow("Option is invalid!");
@@ -176,11 +177,11 @@ public class ProductController extends BaseController {
     public void add() {
         Product product = new Product();
         product.setName(enterString("Product Name"));
-        product.setPrice(enterNumber("Price"));
+        product.setPrice(enterRealNumber("Price"));
         product.setImagePath(enterString("Image Path"));
         product.setQuantity(enterNumber("Quantity"));
         product.setDimension(enterString("Dimension"));
-        product.setWeight(enterNumber("Weight"));
+        product.setWeight(enterRealNumber("Weight"));
         product.setColor(enterString("Color"));
         product.setWarranty(enterBoolean("Warranty"));
         product.setSoundType(enterString("SoundType"));
@@ -188,7 +189,7 @@ public class ProductController extends BaseController {
         product.setEndPromotion(enterDate("EndPromotion"));
         product.setConnectionType(enterString("ConnectionType"));
         product.setMemory(enterString("Memory"));
-        product.setPromotionPrice(enterNumber("PromotionPrice"));
+        product.setPromotionPrice(enterRealNumber("PromotionPrice"));
         product.setBattery(enterString("Battery"));
         product.setOS(enterString("OS"));
         product.setSDCard(enterString("SDCard"));
@@ -243,7 +244,8 @@ public class ProductController extends BaseController {
                         + "SET Name=N'" + product.getName() + "',\n"
                         + "Price=" + product.getPrice() + ",\n"
                         + "ImagePath=N'" + product.getImagePath() + "',\n"
-                        + "Quantity=" + product.getQuantity() + ", Dimension='',\n"
+                        + "Quantity=" + product.getQuantity() + ","
+                        + " Dimension=N'"+product.getDimension()+"',\n"
                         + "Weight=" + product.getWeight() + ",\n"
                         + "Color=N'" + product.getColor() + "',\n"
                         + "Warranty=" + (product.isWarranty() ? 1 : 0) + ",\n"
@@ -278,9 +280,7 @@ public class ProductController extends BaseController {
                         makeDivider();
                         makeRow("Delete Product successfull");
                         makeDivider();
-                    }
-                    else
-                    {
+                    } else {
                         makeDivider();
                         makeRow("Delete Product failed!");
                         makeDivider();
@@ -338,7 +338,7 @@ public class ProductController extends BaseController {
                 product.setName(enterString("Product Name"));
                 break;
             case 2:
-                product.setPrice(enterNumber("Price"));
+                product.setPrice(enterRealNumber("Price"));
                 break;
             case 3:
                 product.setImagePath(enterString("Image Path"));
@@ -350,7 +350,7 @@ public class ProductController extends BaseController {
                 product.setDimension(enterString("Dimension"));
                 break;
             case 6:
-                product.setWeight(enterNumber("Weight"));
+                product.setWeight(enterRealNumber("Weight"));
                 break;
             case 7:
                 product.setColor(enterString("Color"));
@@ -374,7 +374,7 @@ public class ProductController extends BaseController {
                 product.setMemory(enterString("Memory"));
                 break;
             case 14:
-                product.setPromotionPrice(enterNumber("Promotion Price"));
+                product.setPromotionPrice(enterRealNumber("Promotion Price"));
                 break;
             case 15:
                 product.setBattery(enterString("Battery"));
@@ -410,7 +410,7 @@ public class ProductController extends BaseController {
         if (products.size() > 0) {
             makeRow("Product list:");
             for (Product item : products) {
-                makeRow("   ID: " + item.getId() + ", Name: " + item.getName() + ", Price" + item.getPrice());
+                makeRow("   ID: " + item.getId() + ", Name: " + item.getName() + ", Price: $" + item.getPrice());
             }
         } else {
             makeRow("No product found!");
@@ -453,7 +453,8 @@ public class ProductController extends BaseController {
     public ArrayList<Product> getProducts(String condition) {
         ArrayList<Product> products = new ArrayList<Product>();
         try {
-            ResultSet rs = statement.executeQuery("select p.*,b.Name as BrandName from Products p,BrandCategory b where p.BrandId=b.Id and " + condition);
+            ResultSet rs = statement.executeQuery("select p.*,b.Name as BrandName "
+                                                 + "from Products p left join BrandCategory b on p.BrandId=b.Id where " + condition);
             while (rs.next()) {
                 Product product = new Product();
                 product.setId(rs.getInt("Id"));

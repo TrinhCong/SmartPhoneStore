@@ -77,6 +77,21 @@ public class BaseController {
 
     }
 
+    public Double enterRealNumber(String option) {
+        String choiceStr = "";
+        do {
+//            System.out.print("¤ Enter " + option + ":");
+            System.out.print("* Enter " + option + ":");
+            choiceStr = scanner.nextLine();
+            if (isPositiveNumber(choiceStr)) {
+                break;
+            } else {
+                System.out.println("* " + option + " must be a positive number!");
+//                System.out.println("¤ " + option + " must be a positive number!");
+            }
+        } while (true);
+        return Double.parseDouble(choiceStr);
+    }
     public String enterEmail() {
         String email = "";
         do {

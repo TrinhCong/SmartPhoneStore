@@ -107,6 +107,7 @@ public class HomeController extends BaseController {
             int quantity = enterNumber("Quantity");
             billInfo.addToCart(items.get(0), quantity);
             makeRow("Add to cart successfull!");
+            clearConsole();
         } else {
             makeRow("Product has ID=" + id + " doesn't exist!");
         }
